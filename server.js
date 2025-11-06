@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import requestRoutes from './routes/requests.js';
+import requestRoutes from './routes/Requests.js';
 app.use(express.static('public'));
 
 
