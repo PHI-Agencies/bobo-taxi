@@ -25,9 +25,10 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 app.use('/api/requests', requestRoutes);
 
 // Route par défaut → renvoyer index.html
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
+
 
 // Connexion MongoDB
 mongoose.connect(process.env.MONGODB_URI)
