@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import requestRoutes from './routes/requests.js';
+app.use(express.static('public'));
+
 
 const app = express();
 app.use(express.json());
