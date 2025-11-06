@@ -1,0 +1,927 @@
+/* Variables de couleurs et polices */
+:root {
+    --dark-bg: #212121;
+    --light-text: #E0E0E0;
+    --primary-green: #388E3C;
+    --secondary-yellow: #FFD600;
+    --border-subtle: #424242;
+    --card-bg: #2F2F2F;
+    --button-hover: #4CAF50;
+    --highlight-color: #FFC107;
+
+    /* Polices */
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+}
+
+/* Styles généraux et réinitialisation */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--dark-bg);
+    color: var(--light-text);
+    margin: 0;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+#main-content {
+    flex-grow: 1;
+    transition: margin-right 0.3s ease;
+}
+
+#main-content.shifted {
+    margin-right: 280px;
+}
+
+/* En-tête (Header) */
+/* Header flex réorganisé */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    height: 90px;
+}
+
+/* Logo à gauche */
+.nav-left {
+    flex: 0 0 auto;
+    z-index: 10; /* S'assure qu'il reste au-dessus de la barre si nécessaire */
+}
+
+/* Barre de recherche centrée */
+.nav-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 5; /* Derrière le logo si besoin */
+}
+
+/* Menu à droite */
+.nav-right {
+    flex: 0 0 auto;
+    z-index: 10;
+}
+
+/* Barre de recherche style */
+.top-search-bar {
+    width: 100%;
+    display: flex;
+    background-color: #333;
+    border-radius: 25px;
+    padding: 5px 15px;
+    border: 1px solid var(--border-subtle);
+}
+
+.top-search-bar input[type="text"] {
+    border: none;
+    background-color: transparent;
+    color: var(--light-text);
+    font-size: 1.1rem;
+    padding: 10px 0;
+    width: 100%;
+    outline: none;
+}
+
+.top-search-bar button {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.top-search-bar button:hover {
+    background-color: var(--button-hover);
+}
+
+/* --- Media queries corrigées pour petits écrans --- */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        height: auto;
+        padding: 10px 15px;
+    }
+
+    .nav-left {
+        flex: 0 0 auto;
+    }
+
+    .nav-center {
+        position: static; /* plus absolute sur mobile */
+        transform: none;
+        width: 60%; /* barre réduite sur mobile */
+        max-width: none;
+        order: 2; /* barre centrée entre logo et menu */
+    }
+
+    .nav-right {
+        order: 3;
+    }
+
+    .top-search-bar {
+        width: 100%;
+    }
+
+    .top-search-bar input[type="text"] {
+        font-size: 0.9rem;
+        padding: 6px 0;
+    }
+
+    .top-search-bar button {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+
+/* Styles du logo principal (pour index.html) */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo img {
+    height: 90px;
+    transition: transform 0.3s ease;
+}
+
+.logo h1 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.logo .bobo {
+    color: var(--secondary-yellow);
+}
+
+.logo .taxi {
+    color: var(--primary-green);
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+/* Icône de retour sur les pages secondaires */
+.back-arrow-icon {
+    font-size: 2.2rem;
+    color: var(--primary-green);
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    position: absolute; /* Position absolue pour la flèche */
+    left: 20px; /* Au coin gauche */
+    top: 50%; /* Centré verticalement */
+    transform: translateY(-50%); /* Ajustement pour le centrage parfait */
+    z-index: 20; /* S'assure qu'elle est au-dessus de tout */
+    height: auto; /* Supprime la hauteur fixe ici */
+}
+
+.back-arrow-icon:hover {
+    color: var(--button-hover);
+    transform: translateY(-50%) translateX(-5px); /* Animation de retour */
+}
+
+/* Centrage du logo sur les pages secondaires */
+.request-page-body .header-center {
+    position: absolute; /* Position absolue pour le bloc logo */
+    left: 50%; /* Commence à 50% du bord gauche de la nav */
+    transform: translateX(-50%); /* Décale de la moitié de sa propre largeur pour centrer */
+    top: 50%; /* Centré verticalement */
+    transform: translateY(-50%) translateX(-50%); /* Ajustement vertical et horizontal */
+    z-index: 10; /* Sous la flèche si elles se chevauchent */
+    display: flex; /* Active flexbox pour aligner l'image et le texte du logo */
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* S'assure qu'il prend toute la hauteur pour le centrage vertical */
+    width: auto; /* Prend la largeur de son contenu */
+}
+
+.request-page-body .app-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.request-page-body .app-logo-img {
+    height: 90px; /* Taille du logo comme avant */
+    transition: transform 0.3s ease;
+}
+
+.request-page-body .app-logo-img:hover {
+    transform: scale(1.05);
+}
+
+.request-page-body .app-logo-link h1 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.request-page-body .header-right {
+    flex-grow: 0; /* Empêche le header-right de prendre de l'espace */
+    width: auto;
+    /* Cache le header-right sur les pages secondaires s'il est vide */
+    display: none; 
+}
+
+
+/* Barre de recherche dans l'en-tête (pour index.html) */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+.top-search-bar {
+    display: flex;
+    background-color: #333333;
+    border-radius: 25px;
+    padding: 5px 15px;
+    width: 100%;
+    max-width: 600px;
+    border: 1px solid var(--border-subtle);
+}
+
+.top-search-bar input[type="text"] {
+    border: none;
+    background-color: transparent;
+    color: var(--light-text);
+    font-size: 1.1rem;
+    padding: 10px 0;
+    width: 100%;
+    outline: none;
+}
+
+.top-search-bar input[type="text"]::placeholder {
+    color: #888;
+}
+
+.top-search-bar button {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.top-search-bar button:hover {
+    background-color: var(--button-hover);
+}
+
+/* Bouton du menu latéral (pour index.html) */
+.menu-toggle {
+    background-color: transparent;
+    color: var(--primary-green);
+    border: 2px solid var(--primary-green);
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    margin-left: 20px;
+}
+
+.menu-toggle:hover {
+    background-color: var(--primary-green);
+    color: white;
+}
+
+
+/* Section des requêtes */
+#requetes {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 30px auto;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+#requetes h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-green);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+#active-requests-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+#active-requests-list p {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    grid-column: 1 / -1;
+}
+
+/* Style des cartes de requêtes */
+.request-item {
+    background-color: var(--dark-bg);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* Style pour la mise en évidence des résultats de recherche */
+.request-item.highlighted {
+    border-color: var(--secondary-yellow);
+    box-shadow: 0 0 15px rgba(255, 214, 0, 0.5);
+    animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+    0% {
+        border-color: var(--secondary-yellow);
+    }
+    50% {
+        border-color: transparent;
+    }
+    100% {
+        border-color: var(--secondary-yellow);
+    }
+}
+
+.request-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.request-item h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--secondary-yellow);
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.request-item p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: var(--light-text);
+}
+
+.request-item strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.request-item .contact-button {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 15px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.request-item .contact-button:hover {
+    background-color: var(--button-hover);
+}
+
+
+/* Styles des modales */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    padding: 35px;
+    border: 1px solid var(--primary-green);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 550px;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.close-button {
+    color: var(--light-text);
+    font-size: 32px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover {
+    color: var(--secondary-yellow);
+}
+
+.modal-content h3 {
+    font-family: var(--font-heading);
+    color: var(--secondary-yellow);
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.modal-content form label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--light-text);
+    font-weight: 600;
+}
+
+.modal-content form input,
+.modal-content form select,
+.modal-content form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background-color: #3d3d3d;
+    color: var(--light-text);
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+}
+
+.modal-content form button[type="submit"] {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content form button[type="submit"]:hover {
+    background-color: var(--button-hover);
+}
+
+#request-message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+/* Styles du pied de page */
+footer {
+    background-color: #1a1a1a;
+    color: #888;
+    text-align: center;
+    padding: 25px;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 50px;
+    font-size: 0.9rem;
+}
+
+.menu-toggle {
+    background-color: transparent;
+    color: var(--primary-green);
+    border: 2px solid var(--primary-green);
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    margin-left: 20px;
+}
+.menu-toggle:hover { background-color: var(--primary-green); color: white; }
+
+/* --- Menu latéral visible et professionnel --- */
+/* --- Menu latéral visible et professionnel --- */
+.side-menu {
+    height: 100%;
+    width: 280px;
+    position: fixed;
+    top: 0;
+    right: -280px; /* Menu caché par défaut */
+    background-color: #f1f1f1;
+    overflow-x: hidden;
+    transition: right 0.5s ease; /* Animation fluide */
+    padding-top: 60px;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.side-menu.open {
+    right: 0; /* Menu visible */
+}
+
+.side-menu.collapsed { width: 60px; }
+.side-menu-content { opacity: 1; transition: opacity 0.3s ease; }
+.side-menu.collapsed .side-menu-content { opacity: 0; }
+.side-menu a { display: block; padding: 15px 20px; text-decoration: none; color: #333; font-weight: 600; transition: background 0.3s; }
+.side-menu a:hover { background-color: var(--primary-green); color: white; }
+
+/* --- Main content --- */
+#main-content { flex-grow: 1; padding: 20px; transition: margin-right 0.3s ease; }
+
+/* --- Sections, requêtes et CTA --- */
+#requetes { padding: 40px; max-width: 1200px; margin: 30px auto; background-color: var(--card-bg); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+#requetes h2 { font-family: var(--font-heading); color: var(--primary-green); text-align: center; margin-bottom: 30px; font-size: 2.5rem; font-weight: 700; }
+#active-requests-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+#active-requests-list p { text-align: center; color: #999; font-style: italic; grid-column: 1 / -1; }
+
+/* Carte de requête */
+.request-item { background-color: var(--dark-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-subtle); box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.request-item:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+.request-item h3 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--secondary-yellow); margin-top: 0; margin-bottom: 15px; font-weight: 600; }
+.request-item p { margin: 8px 0; font-size: 0.95rem; color: var(--light-text); }
+.request-item strong { color: #fff; font-weight: 600; }
+.request-item .contact-button { background-color: var(--primary-green); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; margin-top: 15px; width: 100%; transition: 0.3s; }
+.request-item .contact-button:hover { background-color: var(--button-hover); }
+
+/* CTA */
+.main-cta-section { max-width: 800px; margin: 50px auto; padding: 40px; background-color: var(--primary-green); border-radius: 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+.main-cta-section p { font-size: 1.5rem; color: white; font-weight: 600; margin: 0; }
+.main-cta-button { background-color: var(--secondary-yellow); color: var(--dark-bg); border: none; padding: 18px 35px; border-radius: 50px; cursor: pointer; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 15px; text-decoration: none; transition: 0.3s; }
+.main-cta-button:hover { background-color: #FFEC40; transform: translateY(-3px); }
+
+/* Footer */
+footer { background-color: #1a1a1a; color: #888; text-align: center; padding: 25px; border-top: 1px solid var(--border-subtle); margin-top: 50px; font-size: 0.9rem; }
+
+/* Media Queries (responsive) */
+@media (max-width: 768px) {
+    .menu-toggle { position: fixed; right: 20px; top: 20px; }
+    .side-menu { width: 200px; }
+    .side-menu.collapsed { width: 60px; }
+}
+/* Le contenu principal est poussé vers la gauche (optionnel mais recommandé) */
+#main-content {
+    transition: margin-right 0.5s ease;
+}
+.side-menu.open ~ #main-content {
+    margin-right: 280px;
+}
+
+
+
+
+
+/* Bouton d'appel à l'action principal */
+.main-cta-section {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: var(--primary-green);
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.main-cta-section p {
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 600;
+    margin: 0;
+}
+
+.main-cta-button {
+    background-color: var(--secondary-yellow);
+    color: var(--dark-bg);
+    border: none;
+    padding: 18px 35px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+}
+
+.main-cta-button:hover {
+    background-color: #FFEC40;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+.main-cta-button i {
+    font-size: 1.8rem;
+}
+
+/* Styles de la page de demande */
+.request-page-body #main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#request-form-section {
+    max-width: 650px;
+    margin: 50px auto;
+    padding: 50px;
+    background-color: var(--dark-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-subtle);
+}
+
+#request-form-section h2 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--primary-green);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#request-form-section p {
+    text-align: center;
+    color: #999;
+    font-size: 1rem;
+    margin-bottom: 40px;
+}
+
+#request-form-section form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--light-text);
+}
+
+#request-form-section form input,
+#request-form-section form select,
+#request-form-section form textarea {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background-color: #333;
+    color: var(--light-text);
+    font-size: 1.1rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#request-form-section form input:focus,
+#request-form-section form select:focus,
+#request-form-section form textarea:focus {
+    border-color: var(--primary-green);
+}
+
+#request-form-section form button[type="submit"] {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 18px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#request-form-section form button[type="submit"]:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-2px);
+}
+
+#request-form-section #request-message {
+    margin-top: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Styles pour la page 'site.html' */
+#site-page-content {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+#site-page-content h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-green);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+#site-page-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #bbb;
+}
+
+/* Media Queries pour la réactivité */
+@media (max-width: 768px) {
+    /* Ajustements spécifiques pour l'en-tête des pages secondaires sur mobile */
+    .request-page-body nav {
+        height: 70px; /* Réduit la hauteur de la nav sur mobile */
+    }
+
+    .request-page-body .back-arrow-icon {
+        left: 15px; /* Ajuste la position de la flèche sur mobile */
+        font-size: 1.8rem; /* Réduit la taille de la flèche */
+        transform: translateY(-50%); /* Centrage vertical */
+    }
+
+    .request-page-body .header-center {
+        /* Le centrage avec left/transform reste efficace */
+        top: 50%;
+        transform: translateY(-50%) translateX(-50%);
+    }
+
+    .request-page-body .app-logo-img {
+        height: 60px; /* Réduit la taille du logo sur mobile */
+    }
+
+    .request-page-body .app-logo-link h1 {
+        font-size: 1.2rem; /* Réduit la taille du texte sur mobile */
+    }
+
+    /* Styles généraux de réactivité (conservés des versions précédentes) */
+    .logo img {
+        height: 60px;
+    }
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-left {
+        width: auto;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .header-right {
+        order: 3;
+        width: 100%;
+        margin-top: 15px;
+        justify-content: space-between;
+    }
+
+    .top-search-bar {
+        width: calc(100% - 70px);
+        margin-right: 0;
+    }
+
+    .top-search-bar input[type="text"] {
+        font-size: 0.9rem;
+        padding: 5px 0;
+    }
+
+    .top-search-bar button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .menu-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1.6rem;
+    }
+    #requetes h2 {
+        font-size: 2rem;
+    }
+    .request-item {
+        padding: 20px;
+    }
+    .request-item h3 {
+        font-size: 1.3rem;
+    }
+    .modal-content {
+        width: 95%;
+        padding: 25px;
+    }
+    .modal-content h3 {
+        font-size: 1.5rem;
+    }
+    .side-menu.open {
+        width: 100%;
+    }
+    .main-cta-section {
+        margin: 30px auto;
+        padding: 30px 20px;
+    }
+    .main-cta-section p {
+        font-size: 1.2rem;
+    }
+    .main-cta-button {
+        padding: 15px 25px;
+        font-size: 1rem;
+        gap: 10px;
+    }
+    .main-cta-button i {
+        font-size: 1.5rem;
+    }
+    
+    /* Styles pour la section du formulaire sur mobile */
+    #request-form-section {
+        padding: 30px 20px;
+        margin: 30px auto;
+    }
+
+    #request-form-section h2 {
+        font-size: 2rem;
+    }
+
+    #request-form-section form input,
+    #request-form-section form select,
+    #request-form-section form textarea {
+        font-size: 1rem;
+        padding: 12px;
+    }
+
+    #request-form-section form button[type="submit"] {
+        font-size: 1.1rem;
+        padding: 15px 20px;
+    }
+    
+}

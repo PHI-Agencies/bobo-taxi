@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faire une demande de taxi - Bobo Taxi</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body class="request-page-body">
+  <header>
+    <nav>
+      <div class="nav-left">
+        <a href="index.html" class="back-arrow-icon" title="Retour à l'accueil">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <section id="request-form-section">
+      <div class="form-container">
+        <h2>Votre demande de taxi</h2>
+        <p>Remplissez le formulaire ci-dessous et des chauffeurs potentiels vous contacteront directement.</p>
+        <form id="create-request-form">
+          <label for="departure-time">Heure de départ souhaitée :</label>
+          <input type="time" id="departure-time" required>
+
+          <label for="itinerary">Itinéraire (Départ et arrivée) :</label>
+          <textarea id="itinerary" rows="3" required placeholder="Exemple : De Tounouma à la gare routière"></textarea>
+
+          <label for="transport-type">Moyen de transport :</label>
+          <select id="transport-type" required>
+            <option value="">Sélectionnez un type</option>
+            <option value="Taxi-voiture">Taxi-voiture</option>
+            <option value="Moto-taxi">Moto-taxi</option>
+          </select>
+
+          <label for="contact-info">Votre contact (Téléphone ou WhatsApp) :</label>
+          <input type="text" id="contact-info" required placeholder="+226 XX XX XX XX">
+
+          <label for="validity-duration">Valide pour (maximum 48h) :</label>
+          <select id="validity-duration" required>
+            <option value="12">12 heures</option>
+            <option value="24">24 heures</option>
+            <option value="48">48 heures</option>
+          </select>
+
+          <label for="comments">Conditions de transport (facultatif) :</label>
+          <textarea id="comments" rows="3" placeholder="Exemples : Seul, avec un ami, avec des bagages..."></textarea>
+
+          <button type="submit">Envoyer la demande</button>
+          <p id="request-message"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Bobo Taxi. Tous droits réservés.</p>
+  </footer>
+
+  <script src="demande.js"></script>
+</body>
+</html>

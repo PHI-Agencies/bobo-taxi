@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bobo Taxi</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body id="main-page">
+    <header>
+    <nav>
+        <div class="nav-left">
+            <div class="logo">
+                <img src="taxi.jpg" alt="Logo">
+            </div>
+        </div>
+
+        <div class="nav-center">
+            <div class="top-search-bar">
+                <input type="text" placeholder="Rechercher...">
+                <button>Rechercher</button>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <button class="menu-toggle">☰</button>
+        </div>
+    </nav>
+</header>
+
+    <!-- Menu latéral -->
+    <div id="side-menu" class="side-menu">
+        <button id="menu-toggle" class="menu-toggle">☰</button>
+
+        <div class="side-menu-content">
+            <a href="index.html">🏠 Accueil</a>
+            <a href="demande.html">🚖 Faire une demande</a>
+            <a href="site.html">🌍 À propos</a>
+            <a href="#" id="close-side-menu">❌ Fermer</a>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <section id="requetes">
+            <h2>Demandes actives</h2>
+            <div id="active-requests-list">
+                <p>Aucune demande active pour le moment.</p>
+            </div>
+        </section>
+
+        <section class="main-cta-section">
+            <p>Besoin d’un taxi rapidement ?</p>
+            <a href="demande.html" class="main-cta-button">
+                <i>🚗</i> Créer une nouvelle demande
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Bobo Taxi - Tous droits réservés.</p>
+    </footer>
+</body>
+</html>
