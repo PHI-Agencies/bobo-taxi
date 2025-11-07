@@ -5,21 +5,26 @@ const requestSchema = new mongoose.Schema({
   itinerary: String,
   transportType: String,
   contactInfo: String,
-  validity: Number, // en heures
+  validity: Number, // durée en heures
   comments: String,
   createdAt: {
     type: Date,
-    default: Date.now,
-    expires: 0 // défini dynamiquement
+    default: Date.now
+  },
+  expireAt: {
+    type: Date,
+    index: { expires: 0 } // TTL pour suppression auto
   }
 });
 
-// Middleware pour définir l'expiration selon "validity"
-requestSchema.pre('save', function(next) {
-  const validityInMs = this.validity * 60 * 60; // convertir en secondes
-  this.schema.path('createdAt').options.expires = validityInMs;
+// Définir dynamiquement la date d’expiration
+requestSchema.pre('save', function (next) {
+  const validityInMs = this.validity * 60 * 60 * 1000; // heures → ms
+  this.expireAt = new Date(Date.now() + validityInMs);
   next();
 });
 
-const Request = mongoose.model('Request', requestSchema);
+// 👇 Spécifie le nom exact de la collection : "demandes"
+const Request = mongoose.model('Request', requestSchema, 'demandes');
+
 export default Request;

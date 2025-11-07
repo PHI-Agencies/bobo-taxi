@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('create-request-form');
   const message = document.getElementById('request-message');
 
-  const API_URL = 'https://ton-backend.onrender.com/api/requests'; // <-- adapte ce lien Render
+  const API_URL = 'https://bobotaxi.onrender.com'; // <-- adapte ce lien Render
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
