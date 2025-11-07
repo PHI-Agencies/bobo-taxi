@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input'); // barre de recherche
     const searchButton = document.getElementById('search-button');
 
-    const API_URL = 'http://localhost:5000/api/requests';
+    const API_URL = 'https://bobotaxi.onrender.com/api/requests';
+;
 
     // --- Menu latéral ---
     if (menuToggle && sideMenu) {
