@@ -111,19 +111,28 @@ document.addEventListener('DOMContentLoaded', () => {
    * Recherche dans toutes les demandes
    * ------------------------------ */
   if (searchButton && searchInput) {
-    searchButton.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const query = searchInput.value.trim();
-      if (!query) return fetchRequests();
+  async function performSearch(query) {
+    try {
+      const url = query
+        ? `${API_URL}/search?q=${encodeURIComponent(query)}`
+        : API_URL;
+      const res = await fetch(url);
+      const data = await res.json();
+      displayRequests(data);
+    } catch (err) {
+      console.error('Erreur lors de la recherche :', err);
+    }
+  }
 
-      try {
-        const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        displayRequests(data);
-      } catch (err) {
-        console.error('Erreur lors de la recherche :', err);
-      }
-    });
+  searchButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    performSearch(searchInput.value.trim());
+  });
+
+  searchInput.addEventListener('input', () => {
+    performSearch(searchInput.value.trim());
+  });
+}
 
     // Recherche en temps réel à la frappe (optionnel)
     searchInput.addEventListener('input', async () => {
@@ -139,4 +148,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-});
+);

@@ -24,17 +24,24 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 🔍 Recherche (optionnelle)
+// 🔍 Recherche (corrigée)
 router.get('/search', async (req, res) => {
   try {
-    const q = req.query.q;
+    const q = req.query.q?.trim();
+    if (!q) {
+      const requests = await Request.find().sort({ createdAt: -1 });
+      return res.json(requests);
+    }
+
+    const regex = new RegExp(q, 'i');
     const requests = await Request.find({
       $or: [
-        { itinerary: new RegExp(q, 'i') },
-        { transportType: new RegExp(q, 'i') },
-        { contactInfo: new RegExp(q, 'i') }
+        { itinerary: regex },
+        { transportType: regex },
+        { contactInfo: regex }
       ]
-    });
+    }).sort({ createdAt: -1 });
+
     res.json(requests);
   } catch (error) {
     res.status(500).json({ error: error.message });
