@@ -52,7 +52,7 @@ router.get('/search', async (req, res) => {
       { transportType: regex },
       { contactInfo: regex },     // utile si tu cherches heures/textes
       { validity: regex },
-      { comments: regex }
+      { contactInfo: regex }
     ];
 
     if (digitCond) orConditions.push(digitCond);
@@ -63,4 +63,6 @@ router.get('/search', async (req, res) => {
     console.error('Erreur recherche:', error);
     res.status(500).json({ error: error.message });
   }
+  
 });
+export default router;
