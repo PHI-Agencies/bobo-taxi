@@ -24,28 +24,43 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 🔍 Recherche (corrigée)
+// 🔍 Recherche robuste par regex sur plusieurs champs (Solution A)
 router.get('/search', async (req, res) => {
   try {
-    const q = req.query.q?.trim();
-    if (!q) {
-      const requests = await Request.find().sort({ createdAt: -1 });
-      return res.json(requests);
+    const qRaw = (req.query.q || '').trim();
+    if (!qRaw) {
+      // si pas de q, renvoyer toutes les demandes
+      const all = await Request.find().sort({ createdAt: -1 });
+      return res.json(all);
     }
 
-    const regex = new RegExp(q, 'i');
-    const requests = await Request.find({
-      $or: [
-        { itinerary: regex },
-        { transportType: regex },
-        { contactInfo: regex }
-      ]
-    }).sort({ createdAt: -1 });
+    // Échapper les caractères spéciaux pour construire un RegExp sûr
+    const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const qEscaped = escapeRegex(qRaw);
 
-    res.json(requests);
+    // regex insensible à la casse pour correspondances partielles
+    const regex = new RegExp(qEscaped, 'i');
+
+    // Si la requête contient des chiffres on prépare aussi une recherche "digits only"
+    const digits = qRaw.replace(/\D/g, '');
+    const digitCond = digits.length >= 3 ? { contactInfo: { $regex: digits } } : null;
+
+    // champs à interroger (ajoute ou retire des champs selon ton modèle)
+    const orConditions = [
+      { departureTime: regex },
+      { itinerary: regex },
+      { transportType: regex },
+      { contactInfo: regex },     // utile si tu cherches heures/textes
+      { validity: regex },
+      { comments: regex }
+    ];
+
+    if (digitCond) orConditions.push(digitCond);
+
+    const results = await Request.find({ $or: orConditions }).sort({ createdAt: -1 });
+    res.json(results);
   } catch (error) {
+    console.error('Erreur recherche:', error);
     res.status(500).json({ error: error.message });
   }
 });
-
-export default router;
