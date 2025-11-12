@@ -226,9 +226,9 @@ header .top-search-bar button:hover {
 .request-page-body .header-center {
     position: absolute; /* Position absolue pour le bloc logo */
     left: 50%; /* Commence à 50% du bord gauche de la nav */
-    transform: translateX(-50%); /* Décale de la moitié de sa propre largeur pour centrer */
     top: 50%; /* Centré verticalement */
-    transform: translateY(-50%) translateX(-50%); /* Ajustement vertical et horizontal */
+    /* CORRECTION ICI : Assure un centrage parfait et propre */
+    transform: translate(-50%, -50%); 
     z-index: 10; /* Sous la flèche si elles se chevauchent */
     display: flex; /* Active flexbox pour aligner l'image et le texte du logo */
     justify-content: center;
@@ -823,9 +823,9 @@ footer { background-color: #1a1a1a; color: #888; text-align: center; padding: 25
     }
 
     .request-page-body .header-center {
-        /* Le centrage avec left/transform reste efficace */
+        /* Correction: Ces lignes sont nécessaires pour garantir le centrage avec les changements de taille */
         top: 50%;
-        transform: translateY(-50%) translateX(-50%);
+        transform: translate(-50%, -50%); 
     }
 
     .request-page-body .app-logo-img {

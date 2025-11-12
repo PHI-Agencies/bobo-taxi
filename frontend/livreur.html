@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>À Propos de Bobo Taxi</title>
-    <!-- Chargement de la police Poppins et des icônes Font Awesome -->
+    <title>Besoin d'un Livreur ? - QRPHI</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
             padding: 20px;
         }
         
-        /* Styles de l'en-tête (minimal pour cette page) */
+        /* Styles de l'en-tête (copiés de votre code) */
         header {
             background-color: var(--dark-bg);
             padding: 10px 0;
@@ -101,10 +101,19 @@
         }
         .bobo { color: var(--secondary-yellow); }
         .taxi { color: var(--primary-green); }
+        .header-right { /* Assure l'alignement */
+            width: 50px; 
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        /* Fin des styles de l'en-tête */
 
-        /* Styles spécifiques au contenu du site */
-        #site-page-content {
-            max-width: 900px;
+
+        /* Styles spécifiques à la page Livreurs (Adaptés) */
+        #livreur-page-content {
+            max-width: 800px;
             margin: 50px auto;
             padding: 40px;
             background-color: var(--card-bg);
@@ -113,7 +122,7 @@
             text-align: center;
         }
 
-        #site-page-content h2 {
+        #livreur-page-content h2 {
             font-family: var(--font-heading);
             color: var(--primary-green);
             font-size: 2.5rem;
@@ -122,56 +131,35 @@
             padding-bottom: 15px;
         }
         
-        #site-page-content h3 {
+        #livreur-page-content h3 {
             color: var(--secondary-yellow);
             font-size: 1.8rem;
-            margin-top: 40px;
+            margin-top: 30px;
             margin-bottom: 25px;
         }
 
-        #site-page-content p {
+        #livreur-page-content p {
             font-size: 1.1rem;
             line-height: 1.8;
             color: #bbb;
             margin-bottom: 20px;
+            text-align: left; /* Aligné à gauche pour une meilleure lecture */
+        }
+        
+        .qrphi-brand {
+            font-weight: 700;
+            color: var(--primary-green); 
         }
 
-        /* Liste de fonctionnalités */
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .feature-item {
-            background-color: var(--dark-bg);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: left;
-            border: 1px solid var(--border-subtle);
-        }
-        .feature-item h4 {
-            color: var(--light-text);
-            font-size: 1.3rem;
-            margin-top: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .feature-item p {
-            font-size: 0.95rem;
-            color: #999;
-        }
-
-        /* Liste "Pourquoi nous choisir" */
-        .why-us-list {
+        /* Liste d'identification */
+        .identification-list {
             list-style: none;
             padding: 0;
-            max-width: 600px;
+            max-width: 500px;
             margin: 20px auto 40px auto;
             text-align: left;
         }
-        .why-us-list li {
+        .identification-list li {
             font-size: 1.1rem;
             margin-bottom: 15px;
             display: flex;
@@ -180,8 +168,24 @@
             color: var(--light-text);
         }
 
-        /* Bouton CTA */
-        .main-cta-button {
+        /* Mise en évidence de l'alerte de paiement */
+        .payment-alert {
+            background-color: #424242; /* Un fond plus sombre pour l'alerte */
+            border: 2px solid var(--highlight-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .payment-alert p {
+            font-size: 1.15rem;
+            color: var(--highlight-color);
+            line-height: 1.5;
+            text-align: center;
+        }
+        
+        /* Bouton CTA - Utilisant le style principal CTA */
+        .btn-livreur-whatsapp {
             background-color: var(--secondary-yellow);
             color: var(--dark-bg);
             border: none;
@@ -198,14 +202,14 @@
             gap: 15px;
             text-decoration: none;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-bottom: 30px; /* Marge en bas du bouton en haut de page */
         }
-        .main-cta-button:hover {
+        .btn-livreur-whatsapp:hover {
             background-color: #FFEC40;
             transform: translateY(-3px);
         }
 
-
-        /* Styles du pied de page amélioré */
+        /* Styles du pied de page amélioré (copiés de votre code) */
         footer {
             background-color: #1a1a1a;
             color: #888;
@@ -242,90 +246,81 @@
 
         /* Media Queries pour la réactivité */
         @media (max-width: 768px) {
-            #site-page-content {
+            #livreur-page-content {
                 padding: 20px;
                 margin: 20px auto;
             }
-            #site-page-content h2 {
+            #livreur-page-content h2 {
                 font-size: 2rem;
             }
-            #site-page-content p {
+            #livreur-page-content p {
                 font-size: 1rem;
-            }
-            .feature-list {
-                grid-template-columns: 1fr;
             }
             .app-logo-img { height: 50px; }
             .app-logo-link h1 { font-size: 1.4rem; }
+            .btn-livreur-whatsapp { padding: 15px 25px; font-size: 1.1rem; }
         }
     </style>
 </head>
 <body class="request-page-body">
+    
     <header>
         <nav>
-            <!-- Flèche de retour -->
             <a href="index.html" class="back-arrow-icon" aria-label="Retour à l'accueil">
                 <i class="fas fa-arrow-left"></i>
             </a>
 
-            <!-- Logo centré -->
             <div class="header-center">
                 <a href="index.html" class="app-logo-link">
-                    <!-- Assurez-vous d'avoir une image nommée 'taxi.jpg' -->
                     <img src="taxi.jpg" alt="Logo Bobo Taxi" class="app-logo-img">
                     <h1><span class="bobo">Bobo</span> <span class="taxi">Taxi</span></h1>
                 </a>
             </div>
             
-            <!-- Le bouton de menu n'est pas nécessaire ici, mais on le laisse vide si votre CSS global le requiert -->
             <div class="header-right"></div>
         </nav>
     </header>
 
     <main id="main-content">
-        <section id="site-page-content">
-            <h2>🌍 Notre Mission : Bobo Taxi</h2>
+        <section id="livreur-page-content">
+            <h2>📦 Livraison Professionnelle QRPHI</h2>
+            
+            <a href="https://wa.me/22667472504" target="_blank" class="btn-livreur-whatsapp">
+                <i class="fab fa-whatsapp"></i> Contacter pour un Livreur
+            </a>
+            <p style="text-align: center; font-size: 0.9rem; color: #888; margin-bottom: 25px;">
+                
+            </p>
             <p>
-                Né du besoin de fluidifier les transports et d'optimiser les trajets dans la région des Hauts-Bassins, Bobo Taxi est une initiative de QRPHI. C'est une plateforme communautaire dédiée à l'entraide et à la sécurité des déplacements. Notre objectif est de connecter rapidement et sans intermédiaire les personnes qui cherchent un transport et les chauffeurs/particuliers disponibles.
+                Afin de garantir la livraison sécurisée et rapide de vos colis, Bobo Taxi, en partenariat avec QRPHI, vous propose l'accès à son réseau de livreurs professionnels et de confiance.
             </p>
 
-            <h3>Comment Ça Marche ?</h3>
-            <div class="feature-list">
-                <div class="feature-item">
-                    <h4><i class="fas fa-bullhorn" style="color: var(--primary-green);"></i> Créez une Demande</h4>
-                    <p>Vous avez besoin d'un Moto-taxi, d'un Taxi-voiture ou vous cherchez un covoiturage pour un trajet précis ? Créez une demande en indiquant votre heure de départ, votre itinéraire et la durée de validité de votre requête.</p>
-                </div>
-                <div class="feature-item">
-                    <h4><i class="fas fa-list-ul" style="color: var(--secondary-yellow);"></i> Consultez les Demandes</h4>
-                    <p>La page d'accueil affiche toutes les demandes actives publiées par la communauté. Vous pouvez facilement filtrer ou utiliser la barre de recherche pour trouver des destinations spécifiques.</p>
-                </div>
-                <div class="feature-item">
-                    <h4><i class="fab fa-whatsapp" style="color: var(--primary-green);"></i> Contact Direct</h4>
-                    <p>Si un chauffeur ou un particulier peut répondre à une demande, il utilise le lien WhatsApp fourni par l'auteur de la requête pour établir un contact direct et rapide, sans commission ni intermédiaire.</p>
-                </div>
-            </div>
-
-            <h3>Pourquoi Choisir Bobo Taxi ?</h3>
-            <ul class="why-us-list">
-                <li><i class="fas fa-check-circle" style="color: var(--secondary-yellow);"></i> Transparence : Toutes les demandes sont visibles, offrant une clarté totale sur l'offre et la demande.</li>
-                <li><i class="fas fa-check-circle" style="color: var(--secondary-yellow);"></i> Rapidité : Le contact direct via WhatsApp est immédiat.</li>
-                <li><i class="fas fa-check-circle" style="color: var(--secondary-yellow);"></i> Soutien Local : Vous soutenez une initiative qui vise à optimiser les transports locaux.</li>
+            <h3>🛡️ Identification des Livreurs</h3>
+            <p>
+                Vous reconnaitrez nos livreurs certifiés <span class="qrphi-brand">QRPHI</span> grâce à des signes distinctifs clairs, assurant leur professionnalisme et votre tranquillité :
+            </p>
+            <ul class="identification-list">
+                <li><i class="fas fa-id-badge" style="color: var(--secondary-yellow);"></i> Ils portent leur badge officiel QRPHI bien visible.</li>
+                <li><i class="fas fa-tshirt" style="color: var(--primary-green);"></i> Ils sont équipés de leur QR-shirt ou uniforme de la marque.</li>
             </ul>
 
-            <div class="cta-about">
-                <p>Prêt à rejoindre la communauté ?</p>
-                <a href="demande.html" class="main-cta-button">
-                    <i class="fas fa-car-side"></i> Faire ma première demande
-                </a>
+            <div class="payment-alert">
+                <h3>⚠️ Important : Modalités de Paiement</h3>
+                <p>
+                    <i class="fas fa-exclamation-triangle" style="color: var(--highlight-color); margin-right: 10px;"></i> 
+                    Tous les dépôts de fonds pour le service de livraison doivent être effectués uniquement sur notre compte officiel (Bobo Taxi / QRPHI). 
+                    <br>
+                    Ne jamais verser d'argent directement au livreur.
+                </p>
             </div>
-        </section>
+            
+            </section>
     </main>
 
     <footer>
         <p>&copy; 2025 Bobo Taxi - Le transport communautaire.</p>
         <p>Une initiative de QRPHI.</p>
         
-        <!-- Liens de contact QRPHI -->
         <div class="footer-links">
             <a href="https://phi-agencies.github.io/QRsite" target="_blank">
                 <i class="fas fa-globe social-icon"></i> Notre Site
@@ -336,7 +331,6 @@
             <a href="https://www.tiktok.com/@qrphicreations" target="_blank">
                 <i class="fab fa-tiktok social-icon"></i> TikTok
             </a>
-            <!-- Le numéro de téléphone est converti en lien WhatsApp standard -->
             <a href="https://wa.me/22667472504" target="_blank">
                 <i class="fab fa-whatsapp social-icon"></i> Contact (226 67 47 25 04)
             </a>
