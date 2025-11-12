@@ -938,5 +938,25 @@ footer { background-color: #1a1a1a; color: #888; text-align: center; padding: 25
         font-size: 1.1rem;
         padding: 15px 20px;
     }
+    /* Media Queries pour la réactivité */
+@media (max-width: 768px) {
+    /* ... (vos autres styles mobiles) ... */
+
+    /* AJOUT/MODIFICATION POUR CENTRER LE CONTENU DE LA SECTION REQUETES */
+    #requetes {
+        padding: 20px 10px; /* Réduire le padding horizontal pour les petits écrans */
+        margin: 20px auto;  /* Garder la marge auto pour le centrage horizontal */
+        width: 100%;        /* S'assurer que ça prend toute la largeur disponible */
+        box-sizing: border-box;
+    }
+    
+    #active-requests-list {
+        /* Permet aux cartes de s'étirer si elles ne tiennent pas sur deux colonnes */
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+        gap: 15px;
+    }
+
+    /* ... (vos autres styles mobiles) ... */
+}
     
 }
