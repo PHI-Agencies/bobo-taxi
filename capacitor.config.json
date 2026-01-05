@@ -1,0 +1,11 @@
+{
+  "appId": "com.bobotaxi.app",
+  "appName": "BoboTaxi",
+  "webDir": "frontend",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://bobotaxi.onrender.com",
+    "cleartext": true
+  }
+}
+

@@ -3,344 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>À Propos de Bobo Taxi</title>
-    <!-- Chargement de la police Poppins et des icônes Font Awesome -->
+    <title>À Propos - Bobo Taxi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* Variables et styles généraux basés sur votre style.css */
         :root {
-            --dark-bg: #212121;
-            --light-text: #E0E0E0;
-            --primary-green: #388E3C;
-            --secondary-yellow: #FFD600;
-            --border-subtle: #424242;
-            --card-bg: #2F2F2F;
-            --button-hover: #4CAF50;
-            --highlight-color: #FFC107;
-            --font-heading: 'Poppins', sans-serif;
-            --font-body: 'Poppins', sans-serif;
+            --taxi-yellow: #f1c40f;
+            --taxi-green: #27ae60;
+            --taxi-dark: #121212;
+            --card-bg: #1e1e1e;
         }
 
         body {
-            font-family: var(--font-body);
-            background-color: var(--dark-bg);
-            color: var(--light-text);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--taxi-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2c3e50 0%, #121212 100%);
+            color: #e0e0e0;
             margin: 0;
             line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
         }
 
-        #main-content {
-            flex-grow: 1;
-            padding: 20px;
-        }
-        
-        /* Styles de l'en-tête (minimal pour cette page) */
+        /* --- Header Moderne --- */
         header {
-            background-color: var(--dark-bg);
-            padding: 10px 0;
-            height: 100px;
-            position: relative;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Icône de retour */
-        .back-arrow-icon {
-            font-size: 2.2rem;
-            color: var(--primary-green);
-            text-decoration: none;
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 20;
-            transition: color 0.3s ease;
-        }
-        .back-arrow-icon:hover {
-            color: var(--button-hover);
-        }
-
-        /* Logo centré */
-        .header-center {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .app-logo-link {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-            color: inherit;
-        }
-        .app-logo-img {
-            height: 70px; /* Taille ajustée pour le header */
-        }
-        .app-logo-link h1 {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-        .bobo { color: var(--secondary-yellow); }
-        .taxi { color: var(--primary-green); }
-
-        /* Styles spécifiques au contenu du site */
-        #site-page-content {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 40px;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-            text-align: center;
-        }
-
-        #site-page-content h2 {
-            font-family: var(--font-heading);
-            color: var(--primary-green);
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--border-subtle);
-            padding-bottom: 15px;
-        }
-        
-        #site-page-content h3 {
-            color: var(--secondary-yellow);
-            font-size: 1.8rem;
-            margin-top: 40px;
-            margin-bottom: 25px;
-        }
-
-        #site-page-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #bbb;
-            margin-bottom: 20px;
-        }
-
-        /* Liste de fonctionnalités */
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .feature-item {
-            background-color: var(--dark-bg);
             padding: 20px;
-            border-radius: 10px;
-            text-align: left;
-            border: 1px solid var(--border-subtle);
-        }
-        .feature-item h4 {
-            color: var(--light-text);
-            font-size: 1.3rem;
-            margin-top: 0;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-        .feature-item p {
-            font-size: 0.95rem;
-            color: #999;
+            justify-content: space-between;
         }
 
-        /* Liste "Pourquoi nous choisir" */
-        .why-us-list {
-            list-style: none;
-            padding: 0;
-            max-width: 600px;
-            margin: 20px auto 40px auto;
-            text-align: left;
-        }
-        .why-us-list li {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: var(--light-text);
-        }
-
-        /* Bouton CTA */
-        .main-cta-button {
-            background-color: var(--secondary-yellow);
-            color: var(--dark-bg);
-            border: none;
-            padding: 18px 35px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
+            justify-content: center;
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .main-cta-button:hover {
-            background-color: #FFEC40;
-            transform: translateY(-3px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        .header-center { text-align: center; flex-grow: 1; }
+        .logo-img { height: 60px; border-radius: 12px; border: 2px solid var(--taxi-yellow); }
 
-        /* Styles du pied de page amélioré */
-        footer {
-            background-color: #1a1a1a;
-            color: #888;
+        /* --- Contenu Principal --- */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-section {
             text-align: center;
-            padding: 30px 25px;
-            border-top: 1px solid var(--border-subtle);
-            margin-top: 50px;
-            font-size: 0.9rem;
+            padding: 30px 0;
         }
 
-        .footer-links {
-            margin-top: 15px;
+        .hero-section h2 {
+            color: var(--taxi-yellow);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .hero-section p {
+            font-size: 1.1rem;
+            color: #bbb;
+        }
+
+        /* --- Nouveau : Comment ça marche --- */
+        .steps-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border-left: 5px solid var(--taxi-green);
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .step-card:hover { transform: scale(1.02); }
+
+        .step-number {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            font-size: 4rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.05);
+        }
+
+        .step-card h4 {
+            color: var(--taxi-yellow);
+            margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+        }
+
+        .step-card p { font-size: 0.95rem; color: #aaa; margin: 0; }
+
+        /* --- Section Parrainage --- */
+        .promo-box {
+            background: linear-gradient(135deg, #27ae60, #1e8449);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 40px 0;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .promo-box h3 { margin-top: 0; color: var(--taxi-yellow); }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--taxi-yellow);
+            color: var(--taxi-dark);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0,0,0,0.3);
+            margin-top: 50px;
+        }
+
+        .social-links {
             display: flex;
             justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-        .footer-links a {
-            color: var(--primary-green);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .footer-links a:hover {
-            color: var(--secondary-yellow);
-        }
-        
-        .footer-links .social-icon {
-            font-size: 1.2rem;
+            gap: 20px;
+            margin-top: 20px;
         }
 
-        /* Media Queries pour la réactivité */
-        @media (max-width: 768px) {
-            #site-page-content {
-                padding: 20px;
-                margin: 20px auto;
-            }
-            #site-page-content h2 {
-                font-size: 2rem;
-            }
-            #site-page-content p {
-                font-size: 1rem;
-            }
-            .feature-list {
-                grid-template-columns: 1fr;
-            }
-            .app-logo-img { height: 50px; }
-            .app-logo-link h1 { font-size: 1.4rem; }
-        }
+        .social-links a { color: var(--taxi-green); font-size: 1.5rem; transition: 0.3s; }
+        .social-links a:hover { color: var(--taxi-yellow); }
     </style>
 </head>
-<body class="request-page-body">
-    <header>
-        <nav>
-            <!-- Flèche de retour -->
-            <a href="index.html" class="back-arrow-icon" aria-label="Retour à l'accueil">
-                <i class="fas fa-arrow-left"></i>
-            </a>
+<body>
 
-            <!-- Logo centré -->
-            <div class="header-center">
-                <a href="index.html" class="app-logo-link">
-                    <!-- Assurez-vous d'avoir une image nommée 'taxi.jpg' -->
-                    <img src="taxi.jpg" alt="Logo Bobo Taxi" class="app-logo-img">
-                    <h1><span class="bobo">Bobo</span> <span class="taxi">Taxi</span></h1>
-                </a>
-            </div>
-            
-            <!-- Le bouton de menu n'est pas nécessaire ici, mais on le laisse vide si votre CSS global le requiert -->
-            <div class="header-right"></div>
-        </nav>
+    <header>
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+        <div class="header-center">
+            <img src="taxi.jpg" alt="Logo" class="logo-img">
+        </div>
+        <div style="width: 45px;"></div>
     </header>
 
-    <main id="main-content">
-        <section id="site-page-content">
-            <h2>🌍 Notre Mission : Bobo Taxi</h2>
-            <p>
-                Né du besoin de fluidifier les transports et d'optimiser les trajets dans la région des Hauts-Bassins, Bobo Taxi est une initiative de QRPHI. C'est une plateforme communautaire dédiée à l'entraide et à la sécurité des déplacements. Notre objectif est de connecter rapidement et sans intermédiaire les personnes qui cherchent un transport et les chauffeurs/particuliers disponibles.
-            </p>
-
-            <h3>Comment Ça Marche ?</h3>
-            <div class="feature-list">
-                <div class="feature-item">
-                    <h4><i class="fas fa-bullhorn" style="color: var(--primary-green);"></i> Créez une Demande</h4>
-                    <p>Vous avez besoin d'un Moto-taxi, d'un Taxi-voiture ou vous cherchez un covoiturage pour un trajet précis ? Créez une demande en indiquant votre heure de départ, votre itinéraire et la durée de validité de votre requête.</p>
-                </div>
-                <div class="feature-item">
-                    <h4><i class="fas fa-list-ul" style="color: var(--secondary-yellow);"></i> Consultez les Demandes</h4>
-                    <p>La page d'accueil affiche toutes les demandes actives publiées par la communauté. Vous pouvez facilement filtrer ou utiliser la barre de recherche pour trouver des destinations spécifiques.</p>
-                </div>
-                <div class="feature-item">
-                    <h4><i class="fab fa-whatsapp" style="color: var(--primary-green);"></i> Contact Direct</h4>
-                    <p>Si un chauffeur ou un particulier peut répondre à une demande, il utilise le lien WhatsApp fourni par l'auteur de la requête pour établir un contact direct et rapide, sans commission ni intermédiaire.</p>
-                </div>
-            </div>
-
-            <h3>Pourquoi Choisir Bobo Taxi ?</h3>
-            <ul class="why-us-list">
-                <li><i class="fas fa-check-circle" style="color: var(--secondary-yellow);"></i> Transparence : Toutes les demandes sont visibles, offrant une clarté totale sur l'offre et la demande.</li>
-                <li><i class="fas fa-check-circle" style="color: var(--secondary-yellow);"></i> Rapidité : Le contact direct via WhatsApp est immédiat.</li>
-                <li><i class="fas fa-check-circle" style="color: var(--secondary-yellow);"></i> Soutien Local : Vous soutenez une initiative qui vise à optimiser les transports locaux.</li>
-            </ul>
-
-            <div class="cta-about">
-                <p>Prêt à rejoindre la communauté ?</p>
-                <a href="demande.html" class="main-cta-button">
-                    <i class="fas fa-car-side"></i> Faire ma première demande
-                </a>
-            </div>
+    <div class="container">
+        <section class="hero-section">
+            <h2>🌍 Bobo Taxi</h2>
+            <p>La plateforme communautaire qui révolutionne le transport à Bobo-Dioulasso en connectant directement passagers et chauffeurs.</p>
         </section>
-    </main>
+
+        <h3 style="text-align: center; color: var(--taxi-green);">Comment ça marche maintenant ?</h3>
+        
+        <div class="steps-container">
+            <div class="step-card">
+                <span class="step-number">01</span>
+                <h4><i class="fas fa-bullhorn"></i> Pour les Passagers</h4>
+                <p>Publiez votre demande gratuitement. Votre annonce est visible par tous nos chauffeurs actifs. Seuls les professionnels certifiés peuvent voir vos coordonnées pour vous contacter.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">02</span>
+                <h4><i class="fas fa-id-card"></i> Pour les Chauffeurs</h4>
+                <p>Inscrivez-vous pour 1000 FCFA/mois. Cet abonnement vous donne un accès illimité aux contacts des clients et vous permet d'être listé dans notre annuaire des chauffeurs actifs.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">03</span>
+                <h4><i class="fas fa-users"></i> Le Système de Parrainage</h4>
+                <p>Chaque chauffeur possède un code unique. Pour chaque collègue qui s'inscrit avec votre code, vous recevez <b>500 FCFA</b> directement dans votre solde, retirables immédiatement.</p>
+            </div>
+        </div>
+
+        <div class="promo-box">
+            <h3>Gagnez de l'argent avec nous !</h3>
+            <p>Vous connaissez des taximen à Bobo ? Invitez-les et commencez à gagner des bonus dès aujourd'hui.</p>
+            <a href="inscription.html" class="cta-button">Devenir Chauffeur Actif</a>
+        </div>
+
+        <section style="text-align: center;">
+            <h3>Pourquoi nous choisir ?</h3>
+            <p><i class="fas fa-check-circle" style="color: var(--taxi-yellow);"></i> <b>Sécurité :</b> Seuls les chauffeurs enregistrés accèdent aux clients.</p>
+            <p><i class="fas fa-check-circle" style="color: var(--taxi-yellow);"></i> <b>Zéro Commission :</b> Le prix du trajet se discute entre vous et le chauffeur.</p>
+            <p><i class="fas fa-check-circle" style="color: var(--taxi-yellow);"></i> <b>Local :</b> Une solution pensée par et pour les habitants de Bobo-Dioulasso.</p>
+        </section>
+    </div>
 
     <footer>
-        <p>&copy; 2025 QRPHI - Le transport communautaire.</p>
-        <p>Une initiative de QRPHI.</p>
-        
-        <!-- Liens de contact QRPHI -->
-        <div class="footer-links">
-            <a href="https://phi-agencies.github.io/QRsite" target="_blank">
-                <i class="fas fa-globe social-icon"></i> Notre Site
-            </a>
-            <a href="https://web.facebook.com/profile.php?id=61581623601062" target="_blank">
-                <i class="fab fa-facebook social-icon"></i> Facebook
-            </a>
-            <a href="https://www.tiktok.com/@qrphicreations" target="_blank">
-                <i class="fab fa-tiktok social-icon"></i> TikTok
-            </a>
-            <!-- Le numéro de téléphone est converti en lien WhatsApp standard -->
-            <a href="https://wa.me/22667472504" target="_blank">
-                <i class="fab fa-whatsapp social-icon"></i> Contact (226 67 47 25 04)
-            </a>
+        <p>&copy; 2026 QRPHI - Bobo Taxi</p>
+        <div class="social-links">
+            <a href="https://wa.me/22667472504"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://web.facebook.com/profile.php?id=61581623601062"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.tiktok.com/@qrphicreations"><i class="fab fa-tiktok"></i></a>
         </div>
+        <p style="font-size: 0.8rem; margin-top: 15px; color: #666;">Une initiative de QRPHI Creations.</p>
     </footer>
+
 </body>
 </html>

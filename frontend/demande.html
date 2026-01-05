@@ -3,72 +3,198 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Faire une demande de taxi - Bobo Taxi</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Publier une demande - Bobo Taxi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --taxi-yellow: #f1c40f;
+      --taxi-green: #27ae60;
+      --taxi-dark: #121212;
+      --card-bg: #1e1e1e;
+      --input-bg: #2a2a2a;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--taxi-dark);
+      background-image: radial-gradient(circle at 50% 0%, #2c3e50 0%, #121212 100%);
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* --- Navigation --- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .app-logo-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      border: 2px solid var(--taxi-yellow);
+    }
+
+    /* --- Formulaire --- */
+    .form-container {
+      max-width: 450px;
+      margin: 10px auto 40px;
+      padding: 25px;
+      background: var(--card-bg);
+      border-radius: 25px;
+      border: 1px solid #333;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+    h2 {
+      color: var(--taxi-yellow);
+      margin-top: 0;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #aaa;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      color: var(--taxi-green);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      background: var(--input-bg);
+      border: 1px solid #444;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--taxi-yellow);
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(90deg, var(--taxi-green), #1e8449);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+      transition: transform 0.2s;
+    }
+
+    button[type="submit"]:active {
+      transform: scale(0.98);
+    }
+
+    #request-message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      padding: 20px;
+    }
+  </style>
 </head>
 
-<body class="request-page-body">
+<body>
   <header>
     <nav>
-      <a href="index.html" class="back-arrow-icon" aria-label="Retour à l'accueil">
+      <a href="index.html" class="btn-back">
         <i class="fas fa-arrow-left"></i>
       </a>
-
-      <div class="header-center">
-        <a href="index.html" class="app-logo-link">
-          <img src="taxi.jpg" alt="Logo Bobo Taxi" class="app-logo-img">
-        </a>
-      </div>
-      
-      <div class="header-right"></div>
-    </nav>
+      <img src="taxi.jpg" alt="Logo Bobo Taxi" class="app-logo-img">
+      <div style="width: 40px;"></div> </nav>
   </header>
 
-  <main id="main-content">
-    <section id="request-form-section">
-      <div class="form-container">
-        <h2>Votre demande de taxi</h2>
-        <p>Remplissez le formulaire ci-dessous et des chauffeurs potentiels vous contacteront directement.</p>
-        <form id="create-request-form">
-          <label for="departure-time">Heure de départ souhaitée :</label>
-          <input type="time" id="departure-time" required>
+  <main>
+    <div class="form-container">
+      <h2>Publier une annonce</h2>
+      <p class="subtitle">Votre demande sera visible par tous nos chauffeurs actifs pendant la durée choisie.</p>
+      
+      <form id="create-request-form">
+        <label for="transport-type"><i class="fas fa-car"></i> Moyen de transport</label>
+        <select id="transport-type" required>
+          <option value="">Choisissez votre transport</option>
+          <option value="Taxi-voiture">Taxi-voiture</option>
+          <option value="Moto-taxi">Moto-taxi</option>
+        </select>
 
-          <label for="itinerary">Itinéraire (Départ et arrivée) :</label>
-          <textarea id="itinerary" rows="3" required placeholder="Exemple : De Tounouma à la gare routière"></textarea>
+        <label for="itinerary"><i class="fas fa-map-marker-alt"></i> Itinéraire (D'où à où ?)</label>
+        <textarea id="itinerary" rows="2" required placeholder="Ex: De Tounouma vers Grand Marché"></textarea>
 
-          <label for="transport-type">Moyen de transport :</label>
-          <select id="transport-type" required>
-            <option value="">Sélectionnez un type</option>
-            <option value="Taxi-voiture">Taxi-voiture</option>
-            <option value="Moto-taxi">Moto-taxi</option>
-          </select>
+        <div style="display: flex; gap: 15px;">
+          <div style="flex: 1;">
+            <label for="departure-time"><i class="fas fa-clock"></i> Heure</label>
+            <input type="time" id="departure-time" required>
+          </div>
+          <div style="flex: 1;">
+            <label for="validity-duration"><i class="fas fa-hourglass-half"></i> Durée</label>
+            <select id="validity-duration" required>
+              <option value="12">12h</option>
+              <option value="24" selected>24h</option>
+              <option value="48">48h</option>
+            </select>
+          </div>
+        </div>
 
-          <label for="contact-info">Votre contact (Téléphone ou WhatsApp) :</label>
-          <input type="text" id="contact-info" required placeholder="+226 XX XX XX XX">
+        <label for="contact-info"><i class="fas fa-phone-alt"></i> Votre numéro (WhatsApp ou Appel)</label>
+        <input type="text" id="contact-info" required placeholder="Ex: 70 00 00 00">
 
-          <label for="validity-duration">Valide pour (maximum 48h) :</label>
-          <select id="validity-duration" required>
-            <option value="12">12 heures</option>
-            <option value="24">24 heures</option>
-            <option value="48">48 heures</option>
-          </select>
+        <label for="comments"><i class="fas fa-info-circle"></i> Précisions (Facultatif)</label>
+        <textarea id="comments" rows="2" placeholder="Ex: J'ai un gros sac, je suis avec un enfant..."></textarea>
 
-          <label for="comments">Conditions de transport (facultatif) :</label>
-          <textarea id="comments" rows="3" placeholder="Exemples : Seul, avec un ami, avec des bagages..."></textarea>
-
-          <button type="submit">Envoyer la demande</button>
-          <p id="request-message"></p>
-        </form>
-      </div>
-    </section>
+        <button type="submit">Lancer la demande <i class="fas fa-paper-plane" style="margin-left: 10px;"></i></button>
+        <p id="request-message"></p>
+      </form>
+    </div>
   </main>
 
   <footer>
-    <p>&copy; 2025 QRPHI. Tous droits réservés.</p>
+    <p>&copy; 2026 QRPHI - Bobo Taxi Service</p>
   </footer>
 
   <script src="demande.js"></script>

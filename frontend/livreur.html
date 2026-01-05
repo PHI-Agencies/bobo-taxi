@@ -3,338 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Besoin d'un Livreur ? - QRPHI</title>
-    
+    <title>Chauffeurs Actifs - Bobo Taxi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
-        /* Variables et styles généraux basés sur votre style.css */
         :root {
-            --dark-bg: #212121;
-            --light-text: #E0E0E0;
-            --primary-green: #388E3C;
-            --secondary-yellow: #FFD600;
-            --border-subtle: #424242;
-            --card-bg: #2F2F2F;
-            --button-hover: #4CAF50;
-            --highlight-color: #FFC107;
-            --font-heading: 'Poppins', sans-serif;
-            --font-body: 'Poppins', sans-serif;
+            --taxi-yellow: #f1c40f;
+            --taxi-green: #27ae60;
+            --taxi-dark: #121212;
+            --card-bg: #1e1e1e;
         }
 
         body {
-            font-family: var(--font-body);
-            background-color: var(--dark-bg);
-            color: var(--light-text);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--taxi-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2c3e50 0%, #121212 100%);
+            color: white;
             margin: 0;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        #main-content {
-            flex-grow: 1;
             padding: 20px;
-        }
-        
-        /* Styles de l'en-tête (copiés de votre code) */
-        header {
-            background-color: var(--dark-bg);
-            padding: 10px 0;
-            height: 100px;
-            position: relative;
+            min-height: 100vh;
         }
 
-        nav {
+        /* --- Bouton Retour --- */
+        .back-nav {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Icône de retour */
-        .back-arrow-icon {
-            font-size: 2.2rem;
-            color: var(--primary-green);
             text-decoration: none;
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 20;
-            transition: color 0.3s ease;
-        }
-        .back-arrow-icon:hover {
-            color: var(--button-hover);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: 0.3s;
         }
 
-        /* Logo centré */
-        .header-center {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+        .btn-back:hover {
+            background: var(--taxi-yellow);
+            color: var(--taxi-dark);
+            transform: scale(1.1);
         }
-        .app-logo-link {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-decoration: none;
-            color: inherit;
-        }
-        .app-logo-img {
-            height: 70px; /* Taille ajustée pour le header */
-        }
-        .app-logo-link h1 {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-        }
-        .bobo { color: var(--secondary-yellow); }
-        .taxi { color: var(--primary-green); }
-        .header-right { /* Assure l'alignement */
-            width: 50px; 
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        /* Fin des styles de l'en-tête */
 
-
-        /* Styles spécifiques à la page Livreurs (Adaptés) */
-        #livreur-page-content {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 40px;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        header {
             text-align: center;
+            padding: 10px 0 30px;
         }
 
-        #livreur-page-content h2 {
-            font-family: var(--font-heading);
-            color: var(--primary-green);
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--border-subtle);
-            padding-bottom: 15px;
-        }
-        
-        #livreur-page-content h3 {
-            color: var(--secondary-yellow);
-            font-size: 1.8rem;
-            margin-top: 30px;
-            margin-bottom: 25px;
-        }
-
-        #livreur-page-content p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #bbb;
-            margin-bottom: 20px;
-            text-align: left; /* Aligné à gauche pour une meilleure lecture */
-        }
-        
-        .qrphi-brand {
-            font-weight: 700;
-            color: var(--primary-green); 
-        }
-
-        /* Liste d'identification */
-        .identification-list {
-            list-style: none;
-            padding: 0;
-            max-width: 500px;
-            margin: 20px auto 40px auto;
-            text-align: left;
-        }
-        .identification-list li {
-            font-size: 1.1rem;
+        .logo-container {
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--light-text);
         }
 
-        /* Mise en évidence de l'alerte de paiement */
-        .payment-alert {
-            background-color: #424242; /* Un fond plus sombre pour l'alerte */
-            border: 2px solid var(--highlight-color);
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 30px;
-            text-align: center;
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 3px solid var(--taxi-yellow);
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
         }
-        .payment-alert p {
-            font-size: 1.15rem;
-            color: var(--highlight-color);
-            line-height: 1.5;
-            text-align: center;
-        }
-        
-        /* Bouton CTA - Utilisant le style principal CTA */
-        .btn-livreur-whatsapp {
-            background-color: var(--secondary-yellow);
-            color: var(--dark-bg);
-            border: none;
-            padding: 18px 35px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 1.2rem;
+
+        .logo-title {
+            font-size: 1.8rem;
             font-weight: 700;
+            color: var(--taxi-yellow);
+            margin: 5px 0 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            letter-spacing: 2px;
+        }
+
+        .status-header {
             display: inline-flex;
             align-items: center;
-            gap: 15px;
-            text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-bottom: 30px; /* Marge en bas du bouton en haut de page */
-        }
-        .btn-livreur-whatsapp:hover {
-            background-color: #FFEC40;
-            transform: translateY(-3px);
-        }
-
-        /* Styles du pied de page amélioré (copiés de votre code) */
-        footer {
-            background-color: #1a1a1a;
-            color: #888;
-            text-align: center;
-            padding: 30px 25px;
-            border-top: 1px solid var(--border-subtle);
-            margin-top: 50px;
-            font-size: 0.9rem;
-        }
-
-        .footer-links {
+            gap: 8px;
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid var(--taxi-green);
+            padding: 6px 16px;
+            border-radius: 30px;
             margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--taxi-green);
         }
-        .footer-links a {
-            color: var(--primary-green);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--taxi-green);
+            border-radius: 50%;
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0px rgba(39, 174, 96, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); }
+            100% { box-shadow: 0 0 0 0px rgba(39, 174, 96, 0); }
+        }
+
+        .chauffeurs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .chauffeur-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #333;
+        }
+
+        .avatar-img {
+            width: 60px;
+            height: 60px;
+            background: #2a2a2a;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        .footer-links a:hover {
-            color: var(--secondary-yellow);
-        }
-        
-        .footer-links .social-icon {
-            font-size: 1.2rem;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.5rem;
+            color: var(--taxi-yellow);
+            border: 2px solid #444;
         }
 
-        /* Media Queries pour la réactivité */
-        @media (max-width: 768px) {
-            #livreur-page-content {
-                padding: 20px;
-                margin: 20px auto;
-            }
-            #livreur-page-content h2 {
-                font-size: 2rem;
-            }
-            #livreur-page-content p {
-                font-size: 1rem;
-            }
-            .app-logo-img { height: 50px; }
-            .app-logo-link h1 { font-size: 1.4rem; }
-            .btn-livreur-whatsapp { padding: 15px 25px; font-size: 1.1rem; }
+        .name { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+        .code-tag { font-size: 0.7rem; color: var(--taxi-yellow); background: #333; padding: 2px 8px; border-radius: 4px; }
+
+        .btn-contact {
+            margin-top: 15px;
+            display: inline-block;
+            background: var(--taxi-green);
+            color: white;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 30px;
         }
     </style>
 </head>
-<body class="request-page-body">
-    
-    <header>
-        <nav>
-            <a href="index.html" class="back-arrow-icon" aria-label="Retour à l'accueil">
-                <i class="fas fa-arrow-left"></i>
-            </a>
+<body>
 
-            <div class="header-center">
-                <a href="index.html" class="app-logo-link">
-                    <img src="taxi.jpg" alt="Logo Bobo Taxi" class="app-logo-img">
-                    <h1><span class="bobo">Bobo</span> <span class="taxi">Taxi</span></h1>
-                </a>
-            </div>
-            
-            <div class="header-right"></div>
-        </nav>
+    <nav class="back-nav">
+        <a href="index.html" class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </nav>
+
+    <header>
+        <div class="logo-container">
+            <img src="taxi.jpg" alt="Logo Bobo Taxi" class="logo-img">
+        </div>
+        <h1 class="logo-title">Bobo Taxi</h1>
+        <div class="status-header">
+            <div class="pulse"></div>
+            <span id="active-count">Chauffeurs en ligne...</span>
+        </div>
     </header>
 
-    <main id="main-content">
-        <section id="livreur-page-content">
-            <h2>📦 Livraison Professionnelle QRPHI</h2>
-            
-            <a href="https://wa.me/22667472504" target="_blank" class="btn-livreur-whatsapp">
-                <i class="fab fa-whatsapp"></i> Contacter pour un Livreur
-            </a>
-            <p style="text-align: center; font-size: 0.9rem; color: #888; margin-bottom: 25px;">
-                
-            </p>
-            <p>
-                Afin de garantir la livraison sécurisée et rapide de vos colis, Bobo Taxi, en partenariat avec QRPHI, vous propose l'accès à son réseau de livreurs professionnels et de confiance.
-            </p>
-
-            <h3>🛡️ Identification des Livreurs</h3>
-            <p>
-                Vous reconnaitrez nos livreurs certifiés <span class="qrphi-brand">QRPHI</span> grâce à des signes distinctifs clairs, assurant leur professionnalisme et votre tranquillité :
-            </p>
-            <ul class="identification-list">
-                <li><i class="fas fa-id-badge" style="color: var(--secondary-yellow);"></i> Ils portent leur badge officiel QRPHI bien visible.</li>
-                <li><i class="fas fa-tshirt" style="color: var(--primary-green);"></i> Ils sont équipés de leur QR-shirt ou uniforme de la marque.</li>
-            </ul>
-
-            <div class="payment-alert">
-                <h3>⚠️ Important : Modalités de Paiement</h3>
-                <p>
-                    <i class="fas fa-exclamation-triangle" style="color: var(--highlight-color); margin-right: 10px;"></i> 
-                    Tous les dépôts de fonds pour le service de livraison doivent être effectués uniquement sur notre compte officiel (Bobo Taxi / QRPHI). 
-                    <br>
-                    Ne jamais verser d'argent directement au livreur.
-                </p>
-            </div>
-            
-            </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 QRPHI - Le transport communautaire.</p>
-        <p>Une initiative de QRPHI.</p>
-        
-        <div class="footer-links">
-            <a href="https://phi-agencies.github.io/QRsite" target="_blank">
-                <i class="fas fa-globe social-icon"></i> Notre Site
-            </a>
-            <a href="https://web.facebook.com/profile.php?id=61581623601062" target="_blank">
-                <i class="fab fa-facebook social-icon"></i> Facebook
-            </a>
-            <a href="https://www.tiktok.com/@qrphicreations" target="_blank">
-                <i class="fab fa-tiktok social-icon"></i> TikTok
-            </a>
-            <a href="https://wa.me/22667472504" target="_blank">
-                <i class="fab fa-whatsapp social-icon"></i> Contact (226 67 47 25 04)
-            </a>
+    <div class="chauffeurs-grid" id="chauffeurs-list">
         </div>
-    </footer>
+
+    <script>
+        async function loadActiveChauffeurs() {
+            try {
+                const res = await fetch('/api/taximan/active-list');
+                const taximen = await res.json();
+                const list = document.getElementById('chauffeurs-list');
+                const countText = document.getElementById('active-count');
+                
+                list.innerHTML = '';
+                countText.innerText = `${taximen.length} CHAUFFEURS ACTIFS`;
+
+                taximen.forEach(taxi => {
+                    const card = document.createElement('div');
+                    card.className = 'chauffeur-card';
+                    card.innerHTML = `
+                        <div class="avatar-img"><i class="fas fa-user"></i></div>
+                        <div class="name">${taxi.name}</div>
+                        <div class="code-tag">CODE: ${taxi.referralCode}</div>
+                        <a href="tel:${taxi.phone}" class="btn-contact">
+                            <i class="fas fa-phone-alt"></i> APPELER
+                        </a>
+                    `;
+                    list.appendChild(card);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        window.onload = loadActiveChauffeurs;
+    </script>
 </body>
 </html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Pro - Bobo Taxi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --taxi-yellow: #f1c40f;
+            --taxi-green: #27ae60;
+            --taxi-dark: #121212;
+            --card-bg: #1e1e1e;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--taxi-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2c3e50 0%, #121212 100%);
+            color: white;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Header --- */
+        .pro-header {
+            background: linear-gradient(135deg, var(--taxi-green), #1b5e20);
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .profile-img {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            border: 3px solid var(--taxi-yellow);
+            color: var(--taxi-green);
+            font-size: 2rem;
+        }
+
+        /* --- Layout Container (Évite les chevauchements) --- */
+        .main-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Espace automatique entre chaque bloc */
+        }
+
+        /* --- Dashboard Stats --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: -25px; /* Petit décalage léger mais contrôlé */
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .stat-value { display: block; font-size: 1.3rem; font-weight: 800; color: var(--taxi-yellow); }
+        .stat-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+        /* --- Zone Parrainage --- */
+        .referral-container {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .ref-code-box {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--taxi-yellow);
+            letter-spacing: 4px;
+            margin: 15px 0;
+            background: #111;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px dashed var(--taxi-green);
+            cursor: pointer;
+        }
+
+        /* --- Liste des Demandes --- */
+        .section-title { 
+            font-size: 1rem; 
+            color: var(--taxi-yellow); 
+            display: flex; 
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .request-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            border-left: 5px solid var(--taxi-green);
+            margin-bottom: 15px; /* Sécurité entre les cartes */
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-top: 15px;
+            box-sizing: border-box;
+        }
+
+        /* --- Modal Retrait --- */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 350px;
+            border: 1px solid var(--taxi-green);
+            text-align: center;
+        }
+
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="pro-header">
+        <div class="profile-img"><i class="fas fa-user-tie"></i></div>
+        <h2 id="taxi-name" style="margin:0;">Mon Espace Pro</h2>
+        <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 5px;"><i class="fas fa-star"></i> Chauffeur Actif</div>
+    </header>
+
+    <div class="main-container">
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <span class="stat-value" id="taxi-balance">0 F</span>
+                <span class="stat-label">Mon Solde</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="taxi-referrals">0</span>
+                <span class="stat-label">Inscriptions</span>
+            </div>
+        </div>
+
+        <div class="referral-container">
+            <span style="font-size: 0.8rem; color: var(--taxi-green); font-weight: 600;">CODE DE PARRAINAGE</span>
+            <div class="ref-code-box" id="ref-code" onclick="copyCode()">CHARGEMENT</div>
+            <button onclick="openModal()" style="background: var(--taxi-yellow); border:none; padding:12px; border-radius:10px; width:100%; font-weight:700; cursor:pointer;">
+                <i class="fas fa-wallet"></i> DEMANDER UN RETRAIT
+            </button>
+        </div>
+
+        <div class="requests-section">
+            <div class="section-title">
+                <span><i class="fas fa-bolt"></i> Demandes Clients</span>
+                <span style="font-size: 0.7rem; opacity: 0.5;">En direct</span>
+            </div>
+            
+            <div id="taxi-requests-list" style="margin-top: 15px;">
+                <div class="request-card">
+                    <div style="font-weight: 600; color: var(--taxi-yellow);">📍 Secteur 21 -> Colma</div>
+                    <div style="font-size: 0.85rem; color: #bbb; margin-top: 5px;">Moyen : Moto-Taxi</div>
+                    <a href="#" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> CONTACTER</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color: var(--taxi-yellow); margin-top: 0;">Retrait</h3>
+            <input type="number" id="w-amount" placeholder="Montant">
+            <input type="tel" id="w-phone" placeholder="Numéro Orange/Moov">
+            <select id="w-method">
+                <option value="Orange Money">Orange Money</option>
+                <option value="Moov Money">Moov Money</option>
+            </select>
+            <button onclick="submitWithdrawal()" style="background: var(--taxi-green); color: white; border:none; padding:12px; width:100%; border-radius:10px; font-weight:700; margin-top:10px;">CONFIRMER</button>
+            <button onclick="closeModal()" style="background:none; border:none; color:#ff4444; margin-top:10px; cursor:pointer;">ANNULER</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('withdrawModal').style.display = 'none'; }
+        function copyCode() {
+            const code = document.getElementById('ref-code').innerText;
+            navigator.clipboard.writeText(code);
+            alert("Code copié !");
+        }
+    </script>
+</body>
+</html>

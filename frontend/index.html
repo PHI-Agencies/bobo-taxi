@@ -3,65 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bobo Taxi</title>
-    <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
+    <title>Bobo Taxi - Transport Communautaire</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #f1c40f; 
+            --primary-dark: #d4ac0d;
+            --green: #27ae60;
+            --dark: #121212;
+            --card-bg: #1e1e1e;
+            --text-light: #f4f4f4;
+            --text-muted: #aaaaaa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            background-image: radial-gradient(circle at 50% 0%, #2c3e50 0%, #121212 100%);
+            color: var(--text-light);
+            margin: 0;
+            padding-bottom: 100px;
+        }
+
+        /* --- Header --- */
+        header {
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 12px 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-box { display: flex; align-items: center; gap: 10px; }
+        .logo-box img { height: 45px; border-radius: 10px; border: 2px solid var(--primary); }
+
+        .search-container {
+            flex-grow: 1;
+            margin: 0 15px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            padding: 10px 15px 10px 40px;
+            border-radius: 30px;
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+
+        /* --- Hero Banner --- */
+        .hero {
+            padding: 30px 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(241, 196, 15, 0.1), transparent);
+        }
+
+        .hero h1 { font-size: 1.4rem; margin: 0; color: var(--primary); }
+        .hero p { font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0; }
+
+        /* --- Menu Latéral --- */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: var(--card-bg);
+            z-index: 2000;
+            transition: 0.4s ease;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+            padding: 25px;
+        }
+
+        .side-menu.active { right: 0; }
+        .side-menu-content a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            text-decoration: none;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* --- Cartes de Demandes --- */
+        #main-content { max-width: 600px; margin: 0 auto; padding: 0 15px; }
+
+        .request-item {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .request-item::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 6px; height: 100%;
+            background: var(--primary);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .transport-badge {
+            background: rgba(241, 196, 15, 0.15);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .time-left { font-size: 0.75rem; color: var(--text-muted); }
+
+        .itinerary {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        /* Bouton Premium */
+        .btn-premium-lock {
+            background: linear-gradient(90deg, var(--primary), #d4ac0d);
+            color: #121212;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-top: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Floating Button */
+        .floating-cta {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--green);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            z-index: 1500;
+            backdrop-filter: blur(4px);
+        }
+    </style>
 </head>
-<body id="main-page">
+<body>
+
     <header>
-    <nav>
-        <div class="nav-left">
-            <div class="logo">
+        <nav>
+            <div class="logo-box">
                 <img src="taxi.jpg" alt="Logo">
             </div>
-        </div>
 
-        <div class="nav-center">
-            <div class="top-search-bar">
-                <!-- ID AJOUTÉ : search-input -->
-                <input type="text" id="search-input" placeholder="Rechercher...">
-                <!-- ID AJOUTÉ : search-button -->
-                <button id="search-button">Rechercher</button>
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Chercher un trajet...">
             </div>
-        </div>
 
-        <div class="nav-right">
-            <button class="menu-toggle">☰</button>
-        </div>
-    </nav>
-</header>
+            <button id="open-menu" style="background:none; border:none; color:white; font-size:1.4rem;">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
 
-    <!-- Menu latéral -->
+    <div id="menu-overlay"></div>
+
     <div id="side-menu" class="side-menu">
-        <button id="menu-toggle" class="menu-toggle">☰</button>
-
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h2 style="margin:0; color:var(--primary);">Menu</h2>
+            <button id="close-menu" style="background:none; border:none; color:white; font-size:2rem;">&times;</button>
+        </div>
         <div class="side-menu-content">
-            <a href="index.html">🏠 Accueil</a>
-            <a href="demande.html">🚖 Faire une demande</a>
-            <a href="livreur.html">🛵 Besoin d'un livreur ?</a>
-            <a href="site.html">🌍 À propos</a>
-            <a href="#" id="close-side-menu">❌ Fermer</a>
+            <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+            <a href="demande.html"><i class="fas fa-plus-circle"></i> Publier une demande</a>
+            <a href="livreur.html"><i class="fas fa-taxi"></i> Chauffeurs Actifs</a>
+            <a href="inscription.html" style="background:rgba(241, 196, 15, 0.1); color:var(--primary);"><i class="fas fa-star"></i> Espace Taximan</a>
+            <a href="site.html"><i class="fas fa-info-circle"></i> Comment ça marche ?</a>
         </div>
     </div>
 
-    <main id="main-content">
-        <section id="requetes">
-            <h2>Demandes actives</h2>
-            <div id="active-requests-list">
-                <p>Aucune demande active pour le moment.</p>
-            </div>
-        </section>
+    <section class="hero">
+        <h1>Trouvez votre taxi à Bobo</h1>
+        <p>Trajets directs, sans intermédiaire, entre citoyens.</p>
+    </section>
 
-        <section class="main-cta-section">
-            <p>Besoin d’un taxi rapidement ?</p>
-            <a href="demande.html" class="main-cta-button">
-                <i>🚗</i> Créer une nouvelle demande
-            </a>
-        </section>
+    <main id="main-content">
+        <div style="display:flex; justify-content:space-between; padding: 0 5px 15px; font-size:0.8rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">
+            <span>Dernières demandes</span>
+            <span style="color:var(--green)"><i class="fas fa-circle" style="font-size:0.5rem"></i> Live</span>
+        </div>
+        
+        <div id="active-requests-list">
+            </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 QRPHI - Tous droits réservés.</p>
-    </footer>
+    <a href="demande.html" class="floating-cta">
+        <i class="fas fa-paper-plane"></i> PUBLIER UNE DEMANDE
+    </a>
+
+    <script src="script.js"></script>
+    <script>
+        const sideMenu = document.getElementById('side-menu');
+        const overlay = document.getElementById('menu-overlay');
+        const openBtn = document.getElementById('open-menu');
+        const closeBtn = document.getElementById('close-menu');
+
+        function toggle(open) {
+            sideMenu.classList.toggle('active', open);
+            overlay.style.display = open ? 'block' : 'none';
+        }
+
+        openBtn.onclick = () => toggle(true);
+        closeBtn.onclick = () => toggle(false);
+        overlay.onclick = () => toggle(false);
+    </script>
 </body>
 </html>

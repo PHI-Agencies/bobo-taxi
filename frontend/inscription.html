@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Chauffeur - Bobo Taxi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --taxi-yellow: #f1c40f;
+            --taxi-green: #27ae60;
+            --taxi-dark: #121212;
+            --card-bg: #1e1e1e;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--taxi-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2c3e50 0%, #121212 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+        }
+
+        /* --- Bouton Retour --- */
+        .back-nav {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .btn-back {
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover { opacity: 1; color: var(--taxi-yellow); }
+
+        .auth-container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            border: 1px solid #333;
+            position: relative;
+        }
+
+        .header-logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-logo img {
+            height: 65px;
+            border-radius: 15px;
+            border: 2px solid var(--taxi-yellow);
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.2);
+        }
+
+        .header-logo h2 {
+            margin: 0;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* --- Tabs --- */
+        .auth-tabs {
+            display: flex;
+            background: #111;
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 12px;
+            font-weight: 600;
+            color: #777;
+            transition: 0.3s;
+        }
+
+        .tab.active {
+            background: var(--taxi-green);
+            color: white;
+        }
+
+        /* --- Formulaires --- */
+        form { display: none; flex-direction: column; gap: 15px; }
+        form.active { display: flex; }
+
+        .input-group { position: relative; }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--taxi-yellow);
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            padding: 14px 14px 14px 45px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--taxi-yellow); background: #333; }
+
+        .referral-box {
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px dashed var(--taxi-green);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #2ecc71;
+            text-align: center;
+        }
+
+        /* --- Boutons --- */
+        .btn-action {
+            background: linear-gradient(90deg, var(--taxi-yellow), #d4ac0d);
+            color: #121212;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .btn-login {
+            background: var(--taxi-green);
+            color: white;
+        }
+
+        .footer-info {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 25px;
+        }
+
+        .ligdicash-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #aaa;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="back-nav">
+    <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+</nav>
+
+<div class="auth-container">
+    <div class="header-logo">
+        <img src="taxi.jpg" alt="Logo">
+        <h2>Espace Chauffeur</h2>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 5px;">Activez votre accès professionnel</p>
+    </div>
+
+    <div class="auth-tabs">
+        <div class="tab active" onclick="switchTab('register', this)">Inscription</div>
+        <div class="tab" onclick="switchTab('login', this)">Connexion</div>
+    </div>
+
+    <form id="register-form" class="active">
+        <div class="referral-box">
+            <i class="fas fa-ticket-alt"></i> Code parrainage obligatoire pour s'inscrire.
+        </div>
+        
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="reg-name" placeholder="Nom et Prénom" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="reg-phone" placeholder="Numéro Orange ou Moov" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-hashtag"></i>
+            <input type="text" id="reg-ref" placeholder="Code de parrainage" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="reg-pass" placeholder="Mot de passe" required>
+        </div>
+
+        <button type="button" class="btn-action" onclick="processRegistration()">
+            <i class="fas fa-wallet"></i> Payer 1000F & Activer
+        </button>
+    </form>
+
+    <form id="login-form">
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="login-phone" placeholder="Votre numéro" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="login-pass" placeholder="Votre mot de passe" required>
+        </div>
+        <button type="button" class="btn-action btn-login" onclick="processLogin()">
+            <i class="fas fa-sign-in-alt"></i> Se Connecter
+        </button>
+    </form>
+
+    <div class="footer-info">
+        <div class="ligdicash-badge">
+            <i class="fas fa-shield-alt"></i> Paiement sécurisé par LigdiCash
+        </div>
+        <p>© 2026 QRPHI - Bobo-Dioulasso</p>
+    </div>
+</div>
+
+<script>
+    function switchTab(type, el) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('register-form').classList.remove('active');
+        document.getElementById('login-form').classList.remove('active');
+        document.getElementById(type + '-form').classList.add('active');
+    }
+
+    function processRegistration() {
+        const ref = document.getElementById('reg-ref').value;
+        const name = document.getElementById('reg-name').value;
+        const phone = document.getElementById('reg-phone').value;
+
+        if(!ref || !name || !phone) {
+            alert("Veuillez remplir tous les champs.");
+            return;
+        }
+
+        // Simuler redirection LigdiCash
+        alert("Initialisation du paiement sécurisé (1000 FCFA)...");
+        window.location.href = 'Taximan.html';
+    }
+
+    function processLogin() {
+        window.location.href = 'Taximan.html';
+    }
+</script>
+
+</body>
+</html>
