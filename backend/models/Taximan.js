@@ -1,19 +1,15 @@
-// backend/models/Taximan.js
+import mongoose from 'mongoose';
+
 const taximanSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  phone: { type: String, required: true, unique: true }, // Utilisé pour le retrait automatique
-  password: { type: String, required: true },
-  referralCode: { type: String, unique: true },
-  referredBy: { type: String, required: true },
-  walletBalance: { type: Number, default: 0 },
-  referralCount: { type: Number, default: 0 },
-  expireAt: { 
-    type: Date, 
-    default: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    index: { expires: 0 } 
-  }
+    name: { type: String, required: true },
+    phone: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    referralCode: { type: String, unique: true },
+    balance: { type: Number, default: 0 },
+    referrals: { type: Number, default: 0 },
+    isActive: { type: Boolean, default: false }
 }, { timestamps: true });
 
-// Middleware : Juste avant que le compte expire/soit supprimé
-// Note: MongoDB TTL ne déclenche pas toujours les hooks Mongoose. 
-// La meilleure pratique est de faire une vérification quotidienne (Cron Job).
+// C'est cette ligne qui manque ou qui est mal écrite :
+const Taximan = mongoose.model('Taximan', taximanSchema);
+export default Taximan;
