@@ -50,7 +50,6 @@
 
         .logo-small img { height: 35px; border-radius: 6px; border: 1px solid var(--primary); }
 
-        /* Recherche avec Toggle à Droite */
         .search-box {
             flex-grow: 1;
             display: flex;
@@ -59,10 +58,7 @@
             border: 1px solid #444;
             border-radius: 30px;
             padding: 5px 15px;
-            transition: 0.3s;
         }
-
-        .search-box:focus-within { border-color: var(--primary); background: #333; }
 
         .search-box input {
             flex-grow: 1;
@@ -73,8 +69,6 @@
             outline: none;
             font-size: 0.9rem;
         }
-
-        .search-box i.fa-search { color: var(--text-muted); font-size: 0.9rem; }
 
         #open-menu {
             background: none;
@@ -87,6 +81,24 @@
             align-items: center;
             border-left: 1px solid #444;
             margin-left: 5px;
+        }
+
+        /* --- Animation LIVE --- */
+        .live-dot {
+            height: 8px;
+            width: 8px;
+            background-color: var(--green);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            box-shadow: 0 0 8px var(--green);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         /* --- SIDE MENU --- */
@@ -115,13 +127,6 @@
             display: none;
         }
 
-        .side-menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 35px;
-        }
-
         .side-menu-content a {
             display: flex;
             align-items: center;
@@ -132,10 +137,7 @@
             border-radius: 12px;
             margin-bottom: 12px;
             background: rgba(255,255,255,0.05);
-            transition: 0.3s;
         }
-
-        .side-menu-content a:hover { background: rgba(241, 196, 15, 0.2); }
 
         /* --- Content Layout --- */
         #main-content { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
@@ -147,12 +149,6 @@
             margin-bottom: 20px;
             border: 1px solid #333;
             border-left: 5px solid var(--primary);
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .btn-unlock {
@@ -192,7 +188,7 @@
             <div class="logo-small"><img src="taxi.jpg" alt="Logo"></div>
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="filter-input" placeholder="Chercher un quartier...">
+                <input type="text" id="filter-input" placeholder="Chercher un trajet...">
                 <button id="open-menu">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -203,7 +199,7 @@
     <div id="menu-overlay"></div>
 
     <div id="side-menu">
-        <div class="side-menu-header">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:35px;">
             <h2 style="margin:0; font-size: 1.2rem; color: var(--primary);">BOBO TAXI</h2>
             <button id="close-menu" style="background:none; border:none; color:white; font-size:2.2rem; cursor:pointer;">&times;</button>
         </div>
@@ -218,20 +214,17 @@
     </div>
 
     <main id="main-content">
-        <div style="text-align:center; margin-bottom:25px;">
-            <h1 style="font-size:1.3rem; margin:0; color:var(--primary);">Demandes en Direct</h1>
-            <p style="font-size:0.8rem; color:var(--text-muted);">Trouvez un trajet à Bobo-Dioulasso</p>
+        <div style="margin-bottom:25px;">
+            <div style="display:inline-flex; align-items:center; padding:5px 0; margin-bottom:5px;">
+                <span class="live-dot"></span>
+                <span style="color:var(--green); font-size:0.75rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;">Demandes en direct</span>
+            </div>
+            <h1 style="font-size:1.6rem; margin:0; color:var(--text-light); font-weight:700;">Trouvez un trajet</h1>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-top:5px;">Mise à jour automatique • Bobo-Dioulasso</p>
         </div>
 
         <div id="active-requests-list">
-            <div class="request-card">
-                <div style="font-size:0.7rem; color:var(--primary); font-weight:bold; margin-bottom:5px;">AUTO-TAXI</div>
-                <div style="font-weight:600; font-size:1.1rem;">📍 Bolomakoté ➜ Bobo-2010</div>
-                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">Moyen : Moto-Taxi</div>
-                <button class="btn-unlock" onclick="location.href='inscription.html'">
-                    <i class="fas fa-lock"></i> VOIR LE NUMÉRO
-                </button>
-            </div>
+            <p style="text-align:center; padding-top:20px; opacity:0.5;">Connexion au flux live...</p>
         </div>
     </main>
 
@@ -240,6 +233,7 @@
     </a>
 
     <script>
+        // Gestion Menu
         const sideMenu = document.getElementById('side-menu');
         const overlay = document.getElementById('menu-overlay');
         const openBtn = document.getElementById('open-menu');
@@ -251,18 +245,57 @@
             document.body.style.overflow = isOpen ? 'hidden' : 'auto';
         }
 
-        openBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleMenu(true);
-        });
-
+        openBtn.addEventListener('click', () => toggleMenu(true));
         closeBtn.addEventListener('click', () => toggleMenu(false));
         overlay.addEventListener('click', () => toggleMenu(false));
 
-        // Fermer le menu si on clique sur un lien
-        document.querySelectorAll('.side-menu-content a').forEach(link => {
-            link.addEventListener('click', () => toggleMenu(false));
-        });
+        // Gestion API
+        const API_URL = '/api/requests';
+
+        async function loadRequests() {
+            const listContainer = document.getElementById('active-requests-list');
+            try {
+                const response = await fetch(API_URL);
+                const requests = await response.json();
+
+                if (!requests || requests.length === 0) {
+                    listContainer.innerHTML = `<div style="text-align:center; padding:40px; opacity:0.5;">Aucune demande active.</div>`;
+                    return;
+                }
+
+                listContainer.innerHTML = ''; 
+                requests.forEach(req => {
+                    const card = document.createElement('div');
+                    card.className = 'request-card';
+                    const timeAgo = formatTimeAgo(new Date(req.createdAt));
+
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">${req.type || 'TAXI'}</span>
+                            <span style="font-size:0.7rem; opacity:0.6;">${timeAgo}</span>
+                        </div>
+                        <div style="font-weight:600; font-size:1.1rem;">📍 ${req.departure} ➜ ${req.destination}</div>
+                        <button class="btn-unlock" onclick="location.href='inscription.html'">
+                            <i class="fas fa-lock"></i> VOIR LE NUMÉRO
+                        </button>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            } catch (error) {
+                listContainer.innerHTML = `<p style="text-align:center; color:red;">Erreur de connexion au serveur.</p>`;
+            }
+        }
+
+        function formatTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return "À l'instant";
+            const mins = Math.floor(seconds / 60);
+            if (mins < 60) return `Il y a ${mins} min`;
+            return `Il y a ${Math.floor(mins/60)}h`;
+        }
+
+        window.addEventListener('DOMContentLoaded', loadRequests);
+        setInterval(loadRequests, 20000);
     </script>
 </body>
 </html>
