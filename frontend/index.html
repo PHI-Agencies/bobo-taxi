@@ -255,54 +255,55 @@
         const API_URL = '/api/requests';
 
         async function loadRequests() {
-            const listContainer = document.getElementById('active-requests-list');
-            try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('Erreur API');
-                const requests = await response.json();
+    const listContainer = document.getElementById('active-requests-list');
+    try {
+        const response = await fetch(API_URL);
+        const requests = await response.json();
 
-                if (!requests || requests.length === 0) {
-                    listContainer.innerHTML = `<div style="text-align:center; padding:40px; opacity:0.5;">Aucune demande active.</div>`;
-                    return;
-                }
-
-                listContainer.innerHTML = ''; 
-                requests.forEach(req => {
-                    const card = document.createElement('div');
-                    card.className = 'request-card';
-                    
-                    const timePosted = req.createdAt ? formatTimeAgo(new Date(req.createdAt)) : "récemment";
-                    const dateVoyage = req.date || '--/--';
-                    const heureVoyage = req.time || '--:--';
-
-                    card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                            <span style="font-size:0.7rem; color:var(--primary); font-weight:bold; text-transform:uppercase;">${req.type || 'TAXI'}</span>
-                            <span style="font-size:0.7rem; opacity:0.6;">Posté ${timePosted}</span>
-                        </div>
-                        <div style="font-weight:600; font-size:1.1rem; margin-bottom:12px;">📍 ${req.departure}</div>
-                        
-                        <div style="display: flex; gap: 8px;">
-                            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center;">
-                                <div style="font-size:0.55rem; color:var(--text-muted); text-transform:uppercase;">Date</div>
-                                <div style="font-size:0.8rem; font-weight:600; color:var(--primary);">${dateVoyage}</div>
-                            </div>
-                            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center;">
-                                <div style="font-size:0.55rem; color:var(--text-muted); text-transform:uppercase;">Heure</div>
-                                <div style="font-size:0.8rem; font-weight:600; color:var(--primary);">${heureVoyage}</div>
-                            </div>
-                        </div>
-
-                        <button class="btn-unlock" onclick="location.href='inscription.html'">
-                            <i class="fas fa-lock"></i> VOIR LE NUMÉRO
-                        </button>
-                    `;
-                    listContainer.appendChild(card);
-                });
-            } catch (error) {
-                listContainer.innerHTML = `<p style="text-align:center; color:red; padding:20px;">Impossible de charger les trajets.</p>`;
-            }
+        if (!Array.isArray(requests) || requests.length === 0) {
+            listContainer.innerHTML = `<div style="text-align:center; padding:40px; opacity:0.5;">Aucun trajet disponible pour le moment.</div>`;
+            return;
         }
+
+        let htmlContent = ''; 
+        requests.forEach(req => {
+            // Sécurité : formater la date pour l'affichage (DD/MM)
+            const dateParts = req.date ? req.date.split('-') : [];
+            const dateDisplay = dateParts.length === 3 ? `${dateParts[2]}/${dateParts[1]}` : req.date;
+            
+            const timePosted = req.createdAt ? formatTimeAgo(new Date(req.createdAt)) : "récemment";
+
+            htmlContent += `
+                <div class="request-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span style="font-size:0.7rem; color:var(--primary); font-weight:bold; text-transform:uppercase;">${req.type || 'TAXI'}</span>
+                        <span style="font-size:0.7rem; opacity:0.6;">Posté ${timePosted}</span>
+                    </div>
+                    <div style="font-weight:600; font-size:1.1rem; margin-bottom:12px;">📍 ${req.departure}</div>
+                    
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border: 1px solid #333;">
+                            <div style="font-size:0.55rem; color:var(--text-muted); text-transform:uppercase;">Date voyage</div>
+                            <div style="font-size:0.8rem; font-weight:600; color:var(--primary);">${dateDisplay}</div>
+                        </div>
+                        <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border: 1px solid #333;">
+                            <div style="font-size:0.55rem; color:var(--text-muted); text-transform:uppercase;">Heure départ</div>
+                            <div style="font-size:0.8rem; font-weight:600; color:var(--primary);">${req.time || '--:--'}</div>
+                        </div>
+                    </div>
+
+                    <button class="btn-unlock" onclick="location.href='inscription.html'">
+                        <i class="fas fa-lock"></i> VOIR LE NUMÉRO
+                    </button>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = htmlContent;
+    } catch (error) {
+        console.error("Erreur de chargement:", error);
+        listContainer.innerHTML = `<p style="text-align:center; color:red; padding:20px;">Erreur de connexion au serveur.</p>`;
+    }
+}
 
         // --- Filtre de recherche ---
         document.getElementById('filter-input').addEventListener('input', (e) => {
