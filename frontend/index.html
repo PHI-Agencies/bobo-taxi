@@ -12,7 +12,6 @@
     <style>
         :root {
             --primary: #f1c40f; 
-            --primary-dark: #d4ac0d;
             --green: #27ae60;
             --dark: #121212;
             --card-bg: #1e1e1e;
@@ -27,6 +26,7 @@
             color: var(--text-light);
             margin: 0;
             padding-bottom: 100px;
+            overflow-x: hidden;
         }
 
         /* --- Header --- */
@@ -36,148 +36,138 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            padding: 12px 20px;
+            padding: 12px 15px;
             border-bottom: 1px solid #333;
         }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
+        .nav-container {
+            max-width: 800px;
             margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-box img { height: 45px; border-radius: 10px; border: 2px solid var(--primary); }
+        .logo-small img { height: 35px; border-radius: 6px; border: 1px solid var(--primary); }
 
-        .search-container {
+        /* Recherche avec Toggle à Droite */
+        .search-box {
             flex-grow: 1;
-            margin: 0 15px;
-            position: relative;
-        }
-
-        .search-container input {
-            width: 100%;
+            display: flex;
+            align-items: center;
             background: #2a2a2a;
             border: 1px solid #444;
-            padding: 10px 15px 10px 40px;
             border-radius: 30px;
+            padding: 5px 15px;
+            transition: 0.3s;
+        }
+
+        .search-box:focus-within { border-color: var(--primary); background: #333; }
+
+        .search-box input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
             color: white;
+            padding: 8px 10px;
             outline: none;
             font-size: 0.9rem;
         }
 
-        .search-container i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
+        .search-box i.fa-search { color: var(--text-muted); font-size: 0.9rem; }
+
+        #open-menu {
+            background: none;
+            border: none;
             color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 0 5px 12px;
+            display: flex;
+            align-items: center;
+            border-left: 1px solid #444;
+            margin-left: 5px;
         }
 
-        /* --- Hero Banner --- */
-        .hero {
-            padding: 30px 20px;
-            text-align: center;
-            background: linear-gradient(to bottom, rgba(241, 196, 15, 0.1), transparent);
-        }
-
-        .hero h1 { font-size: 1.4rem; margin: 0; color: var(--primary); }
-        .hero p { font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0; }
-
-        /* --- Menu Latéral --- */
-        .side-menu {
+        /* --- SIDE MENU --- */
+        #side-menu {
             position: fixed;
             top: 0;
-            right: -100%;
+            right: -300px;
             width: 280px;
             height: 100vh;
-            background: var(--card-bg);
-            z-index: 2000;
-            transition: 0.4s ease;
+            background: #1e1e1e;
+            z-index: 9999;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px;
+            box-sizing: border-box;
             box-shadow: -10px 0 30px rgba(0,0,0,0.8);
-            padding: 25px;
         }
 
-        .side-menu.active { right: 0; }
+        #side-menu.active { right: 0; }
+
+        #menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 9998;
+            display: none;
+        }
+
+        .side-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
         .side-menu-content a {
             display: flex;
             align-items: center;
             gap: 15px;
             color: white;
             text-decoration: none;
-            padding: 18px;
+            padding: 15px;
             border-radius: 12px;
-            margin-bottom: 10px;
-            background: rgba(255,255,255,0.03);
+            margin-bottom: 12px;
+            background: rgba(255,255,255,0.05);
+            transition: 0.3s;
         }
 
-        /* --- Cartes de Demandes --- */
-        #main-content { max-width: 600px; margin: 0 auto; padding: 0 15px; }
+        .side-menu-content a:hover { background: rgba(241, 196, 15, 0.2); }
 
-        .request-item {
+        /* --- Content Layout --- */
+        #main-content { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
+
+        .request-card {
             background: var(--card-bg);
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 20px;
             border: 1px solid #333;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: hidden;
+            border-left: 5px solid var(--primary);
+            animation: fadeIn 0.5s ease;
         }
 
-        .request-item::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 6px; height: 100%;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-unlock {
             background: var(--primary);
-        }
-
-        .request-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .transport-badge {
-            background: rgba(241, 196, 15, 0.15);
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .time-left { font-size: 0.75rem; color: var(--text-muted); }
-
-        .itinerary {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        /* Bouton Premium */
-        .btn-premium-lock {
-            background: linear-gradient(90deg, var(--primary), #d4ac0d);
             color: #121212;
             border: none;
-            padding: 12px;
             width: 100%;
+            padding: 14px;
             border-radius: 12px;
-            font-weight: 700;
             margin-top: 15px;
+            font-weight: 700;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        /* Floating Button */
         .floating-cta {
             position: fixed;
             bottom: 30px;
@@ -185,96 +175,94 @@
             transform: translateX(-50%);
             background: var(--green);
             color: white;
-            padding: 15px 30px;
+            padding: 16px 30px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
-            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            z-index: 1500;
-            backdrop-filter: blur(4px);
+            z-index: 900;
+            display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.4);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <nav>
-            <div class="logo-box">
-                <img src="taxi.jpg" alt="Logo">
-            </div>
-
-            <div class="search-container">
+        <div class="nav-container">
+            <div class="logo-small"><img src="taxi.jpg" alt="Logo"></div>
+            <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="search-input" placeholder="Chercher un trajet...">
+                <input type="text" id="filter-input" placeholder="Chercher un quartier...">
+                <button id="open-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-
-            <button id="open-menu" style="background:none; border:none; color:white; font-size:1.4rem;">
-                <i class="fas fa-bars"></i>
-            </button>
-        </nav>
+        </div>
     </header>
 
     <div id="menu-overlay"></div>
 
-    <div id="side-menu" class="side-menu">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-            <h2 style="margin:0; color:var(--primary);">Menu</h2>
-            <button id="close-menu" style="background:none; border:none; color:white; font-size:2rem;">&times;</button>
+    <div id="side-menu">
+        <div class="side-menu-header">
+            <h2 style="margin:0; font-size: 1.2rem; color: var(--primary);">BOBO TAXI</h2>
+            <button id="close-menu" style="background:none; border:none; color:white; font-size:2.2rem; cursor:pointer;">&times;</button>
         </div>
         <div class="side-menu-content">
             <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
             <a href="demande.html"><i class="fas fa-plus-circle"></i> Publier une demande</a>
-            <a href="livreur.html"><i class="fas fa-taxi"></i> Chauffeurs Actifs</a>
-            <a href="inscription.html" style="background:rgba(241, 196, 15, 0.1); color:var(--primary);"><i class="fas fa-star"></i> Espace Taximan</a>
-            <a href="site.html"><i class="fas fa-info-circle"></i> Comment ça marche ?</a>
+            <a href="inscription.html" style="background: rgba(241, 196, 15, 0.1); border: 1px solid var(--primary); color: var(--primary);">
+                <i class="fas fa-taxi"></i> Espace Chauffeur
+            </a>
+            <a href="site.html"><i class="fas fa-info-circle"></i> Infos & Aide</a>
         </div>
     </div>
 
-    <section class="hero">
-        <h1>Trouvez votre taxi à Bobo</h1>
-        <p>Trajets directs, sans intermédiaire, entre citoyens.</p>
-    </section>
-
     <main id="main-content">
-        <div style="display:flex; justify-content:space-between; padding: 0 5px 15px; font-size:0.8rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">
-            <span>Dernières demandes</span>
-            <span style="color:var(--green)"><i class="fas fa-circle" style="font-size:0.5rem"></i> Live</span>
+        <div style="text-align:center; margin-bottom:25px;">
+            <h1 style="font-size:1.3rem; margin:0; color:var(--primary);">Demandes en Direct</h1>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Trouvez un trajet à Bobo-Dioulasso</p>
         </div>
-        
+
         <div id="active-requests-list">
+            <div class="request-card">
+                <div style="font-size:0.7rem; color:var(--primary); font-weight:bold; margin-bottom:5px;">AUTO-TAXI</div>
+                <div style="font-weight:600; font-size:1.1rem;">📍 Bolomakoté ➜ Bobo-2010</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">Moyen : Moto-Taxi</div>
+                <button class="btn-unlock" onclick="location.href='inscription.html'">
+                    <i class="fas fa-lock"></i> VOIR LE NUMÉRO
+                </button>
             </div>
+        </div>
     </main>
 
     <a href="demande.html" class="floating-cta">
         <i class="fas fa-paper-plane"></i> PUBLIER UNE DEMANDE
     </a>
 
-    <script src="script.js"></script>
     <script>
         const sideMenu = document.getElementById('side-menu');
         const overlay = document.getElementById('menu-overlay');
         const openBtn = document.getElementById('open-menu');
         const closeBtn = document.getElementById('close-menu');
 
-        function toggle(open) {
-            sideMenu.classList.toggle('active', open);
-            overlay.style.display = open ? 'block' : 'none';
+        function toggleMenu(isOpen) {
+            sideMenu.classList.toggle('active', isOpen);
+            overlay.style.display = isOpen ? 'block' : 'none';
+            document.body.style.overflow = isOpen ? 'hidden' : 'auto';
         }
 
-        openBtn.onclick = () => toggle(true);
-        closeBtn.onclick = () => toggle(false);
-        overlay.onclick = () => toggle(false);
+        openBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMenu(true);
+        });
+
+        closeBtn.addEventListener('click', () => toggleMenu(false));
+        overlay.addEventListener('click', () => toggleMenu(false));
+
+        // Fermer le menu si on clique sur un lien
+        document.querySelectorAll('.side-menu-content a').forEach(link => {
+            link.addEventListener('click', () => toggleMenu(false));
+        });
     </script>
 </body>
 </html>
