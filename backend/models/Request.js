@@ -1,30 +1,15 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-const requestSchema = new mongoose.Schema({
-  departureTime: String,
-  itinerary: String,
-  transportType: String,
-  contactInfo: String,
-  validity: Number, // durée en heures
-  comments: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  expireAt: {
-    type: Date,
-    index: { expires: 0 } // TTL pour suppression auto
-  }
+const RequestSchema = new mongoose.Schema({
+    type: { type: String, required: true }, // Taxi-voiture ou Moto-taxi
+    departure: { type: String, required: true }, // Itinéraire complet
+    destination: { type: String, default: "" }, 
+    date: { type: String, required: true }, // La date du voyage
+    time: { type: String, required: true }, // L'heure du départ
+    duration: { type: Number, default: 24 }, // Durée de visibilité en heures
+    contact: { type: String, required: true },
+    description: { type: String, default: "" },
+    createdAt: { type: Date, default: Date.now, expires: '48h' } // Suppression auto après 48h
 });
 
-// Définir dynamiquement la date d’expiration
-requestSchema.pre('save', function (next) {
-  const validityInMs = this.validity * 60 * 60 * 1000; // heures → ms
-  this.expireAt = new Date(Date.now() + validityInMs);
-  next();
-});
-
-// 👇 Spécifie le nom exact de la collection : "demandes"
-const Request = mongoose.model('Request', requestSchema, 'demandes');
-
-export default Request;
+module.exports = mongoose.model('Request', RequestSchema);
