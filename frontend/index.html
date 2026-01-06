@@ -137,6 +137,7 @@
             border-radius: 12px;
             margin-bottom: 12px;
             background: rgba(255,255,255,0.05);
+            transition: 0.3s;
         }
 
         /* --- Content Layout --- */
@@ -149,6 +150,7 @@
             margin-bottom: 20px;
             border: 1px solid #333;
             border-left: 5px solid var(--primary);
+            transition: transform 0.2s;
         }
 
         .btn-unlock {
@@ -188,7 +190,7 @@
             <div class="logo-small"><img src="taxi.jpg" alt="Logo"></div>
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="filter-input" placeholder="Chercher un trajet...">
+                <input type="text" id="filter-input" placeholder="Chercher un quartier...">
                 <button id="open-menu">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -233,7 +235,7 @@
     </a>
 
     <script>
-        // Gestion Menu
+        // --- Menu ---
         const sideMenu = document.getElementById('side-menu');
         const overlay = document.getElementById('menu-overlay');
         const openBtn = document.getElementById('open-menu');
@@ -249,13 +251,14 @@
         closeBtn.addEventListener('click', () => toggleMenu(false));
         overlay.addEventListener('click', () => toggleMenu(false));
 
-        // Gestion API
+        // --- API & Data ---
         const API_URL = '/api/requests';
 
         async function loadRequests() {
             const listContainer = document.getElementById('active-requests-list');
             try {
                 const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Erreur API');
                 const requests = await response.json();
 
                 if (!requests || requests.length === 0) {
@@ -267,14 +270,29 @@
                 requests.forEach(req => {
                     const card = document.createElement('div');
                     card.className = 'request-card';
-                    const timeAgo = formatTimeAgo(new Date(req.createdAt));
+                    
+                    const timePosted = req.createdAt ? formatTimeAgo(new Date(req.createdAt)) : "récemment";
+                    const dateVoyage = req.date || '--/--';
+                    const heureVoyage = req.time || '--:--';
 
                     card.innerHTML = `
                         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                            <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">${req.type || 'TAXI'}</span>
-                            <span style="font-size:0.7rem; opacity:0.6;">${timeAgo}</span>
+                            <span style="font-size:0.7rem; color:var(--primary); font-weight:bold; text-transform:uppercase;">${req.type || 'TAXI'}</span>
+                            <span style="font-size:0.7rem; opacity:0.6;">Posté ${timePosted}</span>
                         </div>
-                        <div style="font-weight:600; font-size:1.1rem;">📍 ${req.departure} ➜ ${req.destination}</div>
+                        <div style="font-weight:600; font-size:1.1rem; margin-bottom:12px;">📍 ${req.departure}</div>
+                        
+                        <div style="display: flex; gap: 8px;">
+                            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center;">
+                                <div style="font-size:0.55rem; color:var(--text-muted); text-transform:uppercase;">Date</div>
+                                <div style="font-size:0.8rem; font-weight:600; color:var(--primary);">${dateVoyage}</div>
+                            </div>
+                            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center;">
+                                <div style="font-size:0.55rem; color:var(--text-muted); text-transform:uppercase;">Heure</div>
+                                <div style="font-size:0.8rem; font-weight:600; color:var(--primary);">${heureVoyage}</div>
+                            </div>
+                        </div>
+
                         <button class="btn-unlock" onclick="location.href='inscription.html'">
                             <i class="fas fa-lock"></i> VOIR LE NUMÉRO
                         </button>
@@ -282,20 +300,32 @@
                     listContainer.appendChild(card);
                 });
             } catch (error) {
-                listContainer.innerHTML = `<p style="text-align:center; color:red;">Erreur de connexion au serveur.</p>`;
+                listContainer.innerHTML = `<p style="text-align:center; color:red; padding:20px;">Impossible de charger les trajets.</p>`;
             }
         }
 
+        // --- Filtre de recherche ---
+        document.getElementById('filter-input').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.request-card');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(search) ? "block" : "none";
+            });
+        });
+
         function formatTimeAgo(date) {
             const seconds = Math.floor((new Date() - date) / 1000);
-            if (seconds < 60) return "À l'instant";
+            if (seconds < 60) return "à l'instant";
             const mins = Math.floor(seconds / 60);
-            if (mins < 60) return `Il y a ${mins} min`;
-            return `Il y a ${Math.floor(mins/60)}h`;
+            if (mins < 60) return `il y a ${mins} min`;
+            const hours = Math.floor(mins / 60);
+            if (hours < 24) return `il y a ${hours}h`;
+            return "récemment";
         }
 
         window.addEventListener('DOMContentLoaded', loadRequests);
-        setInterval(loadRequests, 20000);
+        setInterval(loadRequests, 30000);
     </script>
 </body>
 </html>
