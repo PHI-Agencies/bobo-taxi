@@ -5,26 +5,24 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    // On s'assure que les données arrivent bien
+    const { duration } = req.body;
+    
+    // Calcul de la date d'expiration : Maintenant + X heures
+    const expirationDate = new Date();
+    expirationDate.setHours(expirationDate.getHours() + parseInt(duration || 24));
+
     const newRequest = new Request({
       ...req.body,
-      duration: parseInt(req.body.duration) || 24
+      expireAt: expirationDate // On enregistre la date de fin
     });
+
     const savedRequest = await newRequest.save();
     res.status(201).json(savedRequest);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("Erreur création:", err.message);
+    res.status(400).json({ message: "Erreur lors de la création" });
   }
 });
 
-router.get('/', async (req, res) => {
-  try {
-    // On trie par date croissante (le plus proche en premier)
-    const requests = await Request.find().sort({ date: 1, time: 1 });
-    res.json(requests);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
+// ... reste du code (GET)
 export default router;
