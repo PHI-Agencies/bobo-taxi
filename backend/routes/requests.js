@@ -3,26 +3,37 @@ import Request from '../models/Request.js';
 
 const router = express.Router();
 
+// POST : Créer une demande avec calcul de fin de validité
 router.post('/', async (req, res) => {
   try {
-    const { duration } = req.body;
-    
-    // Calcul de la date d'expiration : Maintenant + X heures
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + parseInt(duration || 24));
+    const duration = Number(req.body.duration || 24);
+    const expireAt = new Date();
+    expireAt.setHours(expireAt.getHours() + duration);
 
-    const newRequest = new Request({
+    const request = new Request({
       ...req.body,
-      expireAt: expirationDate // On enregistre la date de fin
+      duration,
+      expireAt
     });
 
-    const savedRequest = await newRequest.save();
-    res.status(201).json(savedRequest);
+    const saved = await request.save();
+    res.status(201).json(saved);
   } catch (err) {
-    console.error("Erreur création:", err.message);
-    res.status(400).json({ message: "Erreur lors de la création" });
+    res.status(400).json({ message: err.message });
   }
 });
 
-// ... reste du code (GET)
+// GET : Récupérer les trajets (triés par date et heure de départ)
+router.get('/', async (req, res) => {
+  try {
+    const requests = await Request.find({ 
+      expireAt: { $gt: new Date() } 
+    }).sort({ date: 1, time: 1 }); // Urgent en premier
+
+    res.json(requests);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
 export default router;

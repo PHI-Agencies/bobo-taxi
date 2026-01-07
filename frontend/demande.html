@@ -211,54 +211,41 @@
   </footer>
 
   <script>
-    // Initialisation automatique de la date à "Aujourd'hui"
-    document.addEventListener('DOMContentLoaded', () => {
-      const dateInput = document.getElementById('departure-date');
-      const today = new Date().toISOString().split('T')[0];
-      dateInput.value = today;
-      dateInput.min = today; // Empêche de choisir une date passée
-    });
+    // Remplace le bloc <script> de ton fichier demande.html par celui-ci
+const form = document.getElementById('create-request-form');
+const msg = document.getElementById('request-message');
 
-    // Envoi du formulaire vers l'API
-    const form = document.getElementById('create-request-form');
-    const msg = document.getElementById('request-message');
+form.onsubmit = async (e) => {
+    e.preventDefault();
+    msg.innerText = "Publication en cours...";
 
-    form.onsubmit = async (e) => {
-        e.preventDefault();
-        msg.innerText = "Envoi en cours...";
-        msg.style.color = "var(--taxi-yellow)";
-
-        const data = {
-            type: document.getElementById('transport-type').value,
-            departure: document.getElementById('itinerary').value,
-            destination: "", // Optionnel selon ton schéma
-            date: document.getElementById('departure-date').value,
-            time: document.getElementById('departure-time').value,
-            duration: document.getElementById('validity-duration').value,
-            contact: document.getElementById('contact-info').value,
-            description: document.getElementById('comments').value
-        };
-
-        try {
-            const response = await fetch('/api/requests', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                msg.innerText = "Demande publiée avec succès !";
-                msg.style.color = "var(--taxi-green)";
-                setTimeout(() => window.location.href = 'index.html', 2000);
-            } else {
-                msg.innerText = "Erreur lors de la publication.";
-                msg.style.color = "red";
-            }
-        } catch (err) {
-            msg.innerText = "Erreur de connexion au serveur.";
-            msg.style.color = "red";
-        }
+    const data = {
+        type: document.getElementById('transport-type').value,
+        departure: document.getElementById('itinerary').value,
+        date: document.getElementById('departure-date').value,
+        time: document.getElementById('departure-time').value,
+        duration: document.getElementById('validity-duration').value,
+        contact: document.getElementById('contact-info').value,
+        description: document.getElementById('comments').value
     };
+
+    try {
+        const response = await fetch('/api/requests', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            msg.innerText = "✅ Demande publiée !";
+            setTimeout(() => window.location.href = 'index.html', 1500);
+        } else {
+            msg.innerText = "❌ Erreur lors de l'envoi.";
+        }
+    } catch (err) {
+        msg.innerText = "❌ Serveur injoignable.";
+    }
+};
   </script>
 </body>
 </html>
