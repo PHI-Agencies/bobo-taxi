@@ -1,18 +1,19 @@
 import mongoose from 'mongoose';
 
 const requestSchema = new mongoose.Schema({
-  type: { type: String, required: true },       // Taxi-voiture ou Moto-taxi
-  departure: { type: String, required: true },  // Itinéraire (ex: Tounouma)
-  date: { type: String, required: true },       // Date du trajet
-  time: { type: String, required: true },       // Heure du trajet
-  duration: { type: Number, default: 24 },      // 12, 24 ou 48h
+  type: { type: String, required: true },
+  departure: { type: String, required: true },
+  date: { type: String, required: true },
+  time: { type: String, required: true },
+  duration: { type: Number, required: true }, // 12, 24 ou 48
   contact: { type: String, required: true },
   description: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now },
-  expireAt: { type: Date, required: true }      // Date exacte de suppression
+  // Ce champ stocke le moment précis du futur où MongoDB doit supprimer
+  expireAt: { type: Date, required: true } 
 });
 
-// Index TTL : Supprime le document quand l'heure actuelle dépasse expireAt
+// La logique magique de MongoDB : supprime quand l'heure actuelle = expireAt
 requestSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model('Request', requestSchema);

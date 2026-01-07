@@ -3,33 +3,30 @@ import Request from '../models/Request.js';
 
 const router = express.Router();
 
-// POST : Créer une demande avec calcul de fin de validité
 router.post('/', async (req, res) => {
   try {
-    const duration = Number(req.body.duration || 24);
-    const expireAt = new Date();
-    expireAt.setHours(expireAt.getHours() + duration);
+    const hours = Number(req.body.duration); // Récupère 12, 24 ou 48
+    
+    // Logique de calcul : 
+    // Date actuelle + (Nombre d'heures * 3600 secondes * 1000 millisecondes)
+    const expirationDate = new Date(Date.now() + (hours * 3600 * 1000));
 
-    const request = new Request({
+    const newRequest = new Request({
       ...req.body,
-      duration,
-      expireAt
+      expireAt: expirationDate
     });
 
-    const saved = await request.save();
-    res.status(201).json(saved);
+    await newRequest.save();
+    res.status(201).json({ message: "Succès" });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// GET : Récupérer les trajets (triés par date et heure de départ)
 router.get('/', async (req, res) => {
   try {
-    const requests = await Request.find({ 
-      expireAt: { $gt: new Date() } 
-    }).sort({ date: 1, time: 1 }); // Urgent en premier
-
+    // On affiche tout ce qui est en base (Mongo a déjà supprimé le reste)
+    const requests = await Request.find().sort({ createdAt: -1 });
     res.json(requests);
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur' });
