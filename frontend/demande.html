@@ -167,11 +167,13 @@
       <p class="subtitle">Précisez la date et l'heure pour aider nos chauffeurs à s'organiser.</p>
       
       <form id="create-request-form">
-        <label for="transport-type"><i class="fas fa-car"></i> Moyen de transport</label>
-        <select id="transport-type" required>
-          <option value="Taxi-voiture">Taxi-voiture</option>
-          <option value="Moto-taxi" selected>Moto-taxi</option>
-        </select>
+
+      <label for="transport-type"><i class="fas fa-car"></i> Moyen de transport</label>
+      <select id="transport-type" required>
+        <option value="" selected disabled>— Choisir un moyen —</option>
+        <option value="Taxi-voiture">Taxi-voiture</option>
+        <option value="Moto-taxi">Moto-taxi</option>
+      </select>
 
         <label for="itinerary"><i class="fas fa-map-marker-alt"></i> Itinéraire (D'où à où ?)</label>
         <textarea id="itinerary" rows="2" required placeholder="Ex: De Tounouma vers Grand Marché"></textarea>
@@ -211,41 +213,51 @@
   </footer>
 
   <script>
-    // Remplace le bloc <script> de ton fichier demande.html par celui-ci
 const form = document.getElementById('create-request-form');
 const msg = document.getElementById('request-message');
 
-form.onsubmit = async (e) => {
-    e.preventDefault();
-    msg.innerText = "Publication en cours...";
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  msg.innerText = "Publication en cours...";
 
-    const data = {
-        type: document.getElementById('transport-type').value,
-        departure: document.getElementById('itinerary').value,
-        date: document.getElementById('departure-date').value,
-        time: document.getElementById('departure-time').value,
-        duration: document.getElementById('validity-duration').value,
-        contact: document.getElementById('contact-info').value,
-        description: document.getElementById('comments').value
-    };
+  const durationValue = Number(
+    document.getElementById('validity-duration').value
+  );
 
-    try {
-        const response = await fetch('/api/requests', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
+  const data = {
+    type: document.getElementById('transport-type').value,
+    departure: document.getElementById('itinerary').value,
+    date: document.getElementById('departure-date').value,
+    time: document.getElementById('departure-time').value,
+    duration: durationValue, // 🔐 bien un NUMBER
+    contact: document.getElementById('contact-info').value,
+    description: document.getElementById('comments').value || ""
+  };
 
-        if (response.ok) {
-            msg.innerText = "✅ Demande publiée !";
-            setTimeout(() => window.location.href = 'index.html', 1500);
-        } else {
-            msg.innerText = "❌ Erreur lors de l'envoi.";
-        }
-    } catch (err) {
-        msg.innerText = "❌ Serveur injoignable.";
+  try {
+    const response = await fetch('/api/requests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      msg.innerText = "✅ Demande publiée avec succès !";
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1500);
+    } else {
+      const error = await response.json();
+      msg.innerText = "❌ Erreur : " + (error.message || "Échec");
     }
-};
-  </script>
+
+  } catch (error) {
+    console.error(error);
+    msg.innerText = "❌ Serveur injoignable.";
+  }
+});
+</script>
 </body>
 </html>
