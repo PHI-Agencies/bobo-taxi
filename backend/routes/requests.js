@@ -1,11 +1,12 @@
 import express from 'express';
 import Request from '../models/Request.js';
 
-// --- AJOUT INDISPENSABLE : Initialisation du routeur ---
-
 const router = express.Router();
+
 router.post('/', async (req, res) => {
   try {
+    console.log('BODY REÇU :', req.body); // 🔥 DEBUG
+
     const allowedDurations = [12, 24, 48];
     const hours = Number(req.body.duration);
 
@@ -19,18 +20,29 @@ router.post('/', async (req, res) => {
     expirationDate.setHours(expirationDate.getHours() + hours);
 
     const newRequest = new Request({
-      ...req.body,
+      type: req.body.type,
+      departure: req.body.departure,
+      date: req.body.date,
+      time: req.body.time,
       duration: hours,
+      contact: req.body.contact,
+      description: req.body.description || '',
       expireAt: expirationDate
     });
 
     await newRequest.save();
-    res.status(201).json({ message: 'Demande créée avec succès' });
+
+    res.status(201).json({
+      message: 'Demande créée avec succès',
+      expireAt: expirationDate
+    });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Erreur serveur' });
+    console.error('❌ ERREUR MONGOOSE :', err);
+    res.status(500).json({
+      message: err.message
+    });
   }
 });
-// CETTE LIGNE EST INDISPENSABLE :
+
 export default router;
