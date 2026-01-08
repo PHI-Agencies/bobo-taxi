@@ -26,3 +26,5 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
+// CETTE LIGNE EST INDISPENSABLE :
+export default router;
