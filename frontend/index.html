@@ -307,19 +307,16 @@ async function loadRequests() {
                 card.style.display = text.includes(search) ? "block" : "none";
             });
         });
+        // ... (gardez vos fonctions existantes)
 
-        function formatTimeAgo(date) {
-            const seconds = Math.floor((new Date() - date) / 1000);
-            if (seconds < 60) return "à l'instant";
-            const mins = Math.floor(seconds / 60);
-            if (mins < 60) return `il y a ${mins} min`;
-            const hours = Math.floor(mins / 60);
-            if (hours < 24) return `il y a ${hours}h`;
-            return "récemment";
-        }
+// --- AJOUTER CECI À LA TOUTE FIN DU SCRIPT DANS INDEX.HTML ---
+document.addEventListener('DOMContentLoaded', () => {
+    loadRequests(); // Lance le chargement dès que la page est prête
+    
+    // Rafraîchir la liste toutes les 2 minutes pour voir les nouveaux taxis
+    setInterval(loadRequests, 120000); 
+});
 
-        window.addEventListener('DOMContentLoaded', loadRequests);
-        setInterval(loadRequests, 30000);
     </script>
 </body>
 </html>

@@ -2,39 +2,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('create-request-form');
   const message = document.getElementById('request-message');
 
-  const API_URL = 'https://bobotaxi.onrender.com/api/requests'; // <-- adapte ce lien Render
-
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    message.textContent = "Publication en cours...";
 
-    const request = {
-      departureTime: document.getElementById('departure-time').value,
-      itinerary: document.getElementById('itinerary').value,
-      transportType: document.getElementById('transport-type').value,
-      contactInfo: document.getElementById('contact-info').value,
-      validity: parseInt(document.getElementById('validity-duration').value),
-      comments: document.getElementById('comments').value
+    // 🔗 Harmonisation des noms avec le backend
+    const requestData = {
+      type: document.getElementById('transport-type').value,
+      departure: document.getElementById('itinerary').value,
+      date: document.getElementById('departure-date').value,
+      time: document.getElementById('departure-time').value,
+      duration: parseInt(document.getElementById('validity-duration').value),
+      contact: document.getElementById('contact-info').value,
+      description: document.getElementById('comments').value
     };
 
     try {
-      const res = await fetch(API_URL, {
+      const res = await fetch('/api/requests', { // Utilise le chemin relatif
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request)
+        body: JSON.stringify(requestData)
       });
 
       if (res.ok) {
-        message.textContent = '✅ Demande envoyée avec succès !';
-        message.style.color = 'green';
-        form.reset();
+        message.textContent = '✅ Demande publiée !';
+        message.style.color = '#27ae60';
         setTimeout(() => window.location.href = 'index.html', 1500);
       } else {
-        throw new Error('Erreur serveur');
+        const errData = await res.json();
+        throw new Error(errData.message || 'Erreur serveur');
       }
     } catch (err) {
-      message.textContent = '❌ Erreur lors de l’envoi';
-      message.style.color = 'red';
-      console.error(err);
+      message.textContent = '❌ Erreur : ' + err.message;
+      message.style.color = '#e74c3c';
     }
   });
 });
