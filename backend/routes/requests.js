@@ -1,3 +1,9 @@
+import express from 'express';
+import Request from '../models/Request.js';
+
+// --- AJOUT INDISPENSABLE : Initialisation du routeur ---
+const router = express.Router();
+
 router.post('/', async (req, res) => {
   try {
     const allowedDurations = [12, 24, 48];
@@ -9,8 +15,9 @@ router.post('/', async (req, res) => {
       });
     }
 
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + hours);
+    // Utilisation de Date.now() pour un calcul plus précis en millisecondes
+    // (Évite les bugs de décalage horaire sur les serveurs distants)
+    const expirationDate = new Date(Date.now() + (hours * 3600 * 1000));
 
     const newRequest = new Request({
       ...req.body,
@@ -26,5 +33,15 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
-// CETTE LIGNE EST INDISPENSABLE :
+
+// GET pour récupérer les demandes (Optionnel mais recommandé pour ton index.html)
+router.get('/', async (req, res) => {
+    try {
+        const requests = await Request.find().sort({ date: 1, time: 1 });
+        res.json(requests);
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+});
+
 export default router;
