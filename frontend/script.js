@@ -22,49 +22,60 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         requests.forEach(req => {
-            const card = document.createElement('div');
-            // Utilisation de la classe 'request-card' pour correspondre à votre CSS index.html
-            card.classList.add('request-card'); 
-            
-            // Formatage de la date (YYYY-MM-DD vers DD/MM)
-            const dateParts = req.date ? req.date.split('-') : [];
-            const dateDisplay = dateParts.length === 3 ? `${dateParts[2]}/${dateParts[1]}` : (req.date || '--/--');
 
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                    <span style="font-size:0.7rem; color:#f1c40f; font-weight:bold; text-transform:uppercase;">
-                        ${req.type || 'TAXI'}
-                    </span>
-                    <span style="font-size:0.7rem; opacity:0.6;">
-                        <i class="far fa-clock"></i> Expire dans ${req.duration || 24}h
-                    </span>
-                </div>
-                
-                <div style="font-weight:600; font-size:1.1rem; color:white; margin-bottom:12px;">
-                    📍 ${req.departure || 'Itinéraire non précisé'}
-                </div>
+    // 🔥 CALCUL DU TEMPS RESTANT
+    const now = new Date();
+    const expireAt = new Date(req.expireAt);
+    const diffMs = expireAt - now;
 
-                <div style="display: flex; gap: 8px; margin-bottom:15px;">
-                    <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border:1px solid #333;">
-                        <div style="font-size:0.55rem; color:#aaa; text-transform:uppercase;">Date voyage</div>
-                        <div style="font-size:0.8rem; font-weight:600; color:#f1c40f;">${dateDisplay}</div>
-                    </div>
-                    <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border:1px solid #333;">
-                        <div style="font-size:0.55rem; color:#aaa; text-transform:uppercase;">Heure départ</div>
-                        <div style="font-size:0.8rem; font-weight:600; color:#f1c40f;">${req.time || '--:--'}</div>
-                    </div>
-                </div>
-                
-                <p style="font-size:0.85rem; color:#888; margin-bottom:15px;">
-                    <i class="fas fa-info-circle"></i> ${req.description || 'Pas de précision particulière.'}
-                </p>
-                
-                <button class="btn-unlock" onclick="window.location.href='inscription.html'" style="width:100%; padding:12px; border-radius:10px; border:none; background:#f1c40f; color:#121212; font-weight:700; cursor:pointer;">
-                    <i class="fas fa-lock"></i> VOIR LE NUMÉRO
-                </button>
-            `;
-            activeRequestsList.appendChild(card);
-        });
+    // Si déjà expiré (sécurité front)
+    if (diffMs <= 0) return;
+
+    const remainingHours = Math.ceil(diffMs / (1000 * 60 * 60));
+
+    const dateParts = req.date.split('-');
+    const dateDisplay = dateParts.length === 3 
+        ? `${dateParts[2]}/${dateParts[1]}` 
+        : req.date;
+
+    const card = document.createElement('div');
+    card.className = 'request-card';
+    card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">
+                ${req.type.toUpperCase()}
+            </span>
+            <span style="font-size:0.7rem; opacity:0.6;">
+                ⏳ Expire dans ${remainingHours}h
+            </span>
+        </div>
+
+        <div style="font-weight:600; font-size:1.1rem; margin-bottom:12px;">
+            📍 ${req.departure}
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom:10px;">
+            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border: 1px solid #333;">
+                <div style="font-size:0.55rem; color:var(--text-muted);">DATE</div>
+                <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${dateDisplay}</div>
+            </div>
+            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border: 1px solid #333;">
+                <div style="font-size:0.55rem; color:var(--text-muted);">HEURE</div>
+                <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${req.time}</div>
+            </div>
+        </div>
+
+        <p style="font-size:0.8rem; color:#888;">
+            ${req.description || ''}
+        </p>
+
+        <button class="btn-unlock" onclick="location.href='inscription.html'">
+            <i class="fas fa-lock"></i> VOIR LE NUMÉRO
+        </button>
+    `;
+
+    listContainer.appendChild(card);
+});
     }
 
     /** ------------------------------
