@@ -1,3 +1,8 @@
+import express from 'express';
+import Request from '../models/Request.js';
+
+const router = express.Router();
+
 router.post('/', async (req, res) => {
   try {
     const allowedDurations = [12, 24, 48];
@@ -24,4 +29,5 @@ router.post('/', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
 export default router;
