@@ -12,7 +12,6 @@ const requestSchema = new mongoose.Schema({
   expireAt: { type: Date, required: true } // TTL natif MongoDB
 });
 
-// TTL : suppression automatique
 requestSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model('Request', requestSchema);

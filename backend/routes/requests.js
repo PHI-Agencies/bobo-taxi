@@ -3,7 +3,7 @@ import Request from '../models/Request.js';
 
 const router = express.Router();
 
-// POST /api/requests
+// Créer une demande
 router.post('/', async (req, res) => {
   try {
     const allowedDurations = [12, 24, 48];
@@ -28,6 +28,17 @@ router.post('/', async (req, res) => {
     res.status(201).json({ message: 'Demande créée' });
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+// Récupérer toutes les demandes actives
+router.get('/', async (req, res) => {
+  try {
+    const now = new Date();
+    const requests = await Request.find({ expireAt: { $gt: now } }).sort({ createdAt: -1 });
+    res.json(requests);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
