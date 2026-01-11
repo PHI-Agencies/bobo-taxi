@@ -235,115 +235,108 @@
     </a>
 
     <script>
-        // --- Menu ---
-        const sideMenu = document.getElementById('side-menu');
-        const overlay = document.getElementById('menu-overlay');
-        const openBtn = document.getElementById('open-menu');
-        const closeBtn = document.getElementById('close-menu');
+/* ================= MENU ================= */
+const sideMenu = document.getElementById('side-menu');
+const overlay = document.getElementById('menu-overlay');
+const openBtn = document.getElementById('open-menu');
+const closeBtn = document.getElementById('close-menu');
 
-        function toggleMenu(isOpen) {
-            sideMenu.classList.toggle('active', isOpen);
-            overlay.style.display = isOpen ? 'block' : 'none';
-            document.body.style.overflow = isOpen ? 'hidden' : 'auto';
-        }
+function toggleMenu(isOpen) {
+  sideMenu.classList.toggle('active', isOpen);
+  overlay.style.display = isOpen ? 'block' : 'none';
+  document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+}
 
-        openBtn.addEventListener('click', () => toggleMenu(true));
-        closeBtn.addEventListener('click', () => toggleMenu(false));
-        overlay.addEventListener('click', () => toggleMenu(false));
+openBtn.addEventListener('click', () => toggleMenu(true));
+closeBtn.addEventListener('click', () => toggleMenu(false));
+overlay.addEventListener('click', () => toggleMenu(false));
 
-        // Remplace la fonction loadRequests dans ton index.html
+/* ================= LOAD REQUESTS ================= */
 async function loadRequests() {
-    const listContainer = document.getElementById('active-requests-list');
-    try {
-        const response = await fetch('/api/requests');
-        const requests = await response.json();
+  const listContainer = document.getElementById('active-requests-list');
 
-        if (!requests || requests.length === 0) {
-            listContainer.innerHTML = '<p style="text-align:center; padding:40px; opacity:0.5;">Aucun trajet disponible.</p>';
-            return;
-        }
+  try {
+    const response = await fetch('/api/requests');
+    const requests = await response.json();
 
-        listContainer.innerHTML = ''; 
-        requests.forEach(req => {
+    if (!requests || requests.length === 0) {
+      listContainer.innerHTML =
+        '<p style="text-align:center; padding:40px; opacity:0.5;">Aucun trajet disponible.</p>';
+      return;
+    }
 
-    // 🔥 CALCUL DU TEMPS RESTANT
-    const now = new Date();
-    const expireAt = new Date(req.expireAt);
-    const diffMs = expireAt - now;
+    listContainer.innerHTML = '';
 
-    // Si déjà expiré (sécurité front)
-    if (diffMs <= 0) return;
+    requests.forEach(req => {
+      const now = new Date();
+      const expireAt = new Date(req.expireAt);
+      const diffMs = expireAt - now;
 
-    const remainingHours = Math.ceil(diffMs / (1000 * 60 * 60));
+      // sécurité front (normalement inutile si TTL OK)
+      if (diffMs <= 0) return;
 
-    const dateParts = req.date.split('-');
-    const dateDisplay = dateParts.length === 3 
-        ? `${dateParts[2]}/${dateParts[1]}` 
-        : req.date;
+      const remainingHours = Math.ceil(diffMs / (1000 * 60 * 60));
 
-    const card = document.createElement('div');
-    card.className = 'request-card';
-    card.innerHTML = `
+      const dateParts = req.date.split('-');
+      const dateDisplay =
+        dateParts.length === 3 ? `${dateParts[2]}/${dateParts[1]}` : req.date;
+
+      const card = document.createElement('div');
+      card.className = 'request-card';
+      card.innerHTML = `
         <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-            <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">
-                ${req.type.toUpperCase()}
-            </span>
-            <span style="font-size:0.7rem; opacity:0.6;">
-                ⏳ Expire dans ${remainingHours}h
-            </span>
+          <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">
+            ${req.type.toUpperCase()}
+          </span>
+          <span style="font-size:0.7rem; opacity:0.6;">
+            ⏳ Expire dans ${remainingHours}h
+          </span>
         </div>
 
         <div style="font-weight:600; font-size:1.1rem; margin-bottom:12px;">
-            📍 ${req.departure}
+          📍 ${req.departure}
         </div>
 
-        <div style="display: flex; gap: 8px; margin-bottom:10px;">
-            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border: 1px solid #333;">
-                <div style="font-size:0.55rem; color:var(--text-muted);">DATE</div>
-                <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${dateDisplay}</div>
-            </div>
-            <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border: 1px solid #333;">
-                <div style="font-size:0.55rem; color:var(--text-muted);">HEURE</div>
-                <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${req.time}</div>
-            </div>
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border:1px solid #333;">
+            <div style="font-size:0.55rem; color:var(--text-muted);">DATE</div>
+            <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${dateDisplay}</div>
+          </div>
+          <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border:1px solid #333;">
+            <div style="font-size:0.55rem; color:var(--text-muted);">HEURE</div>
+            <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${req.time}</div>
+          </div>
         </div>
 
-        <p style="font-size:0.8rem; color:#888;">
-            ${req.description || ''}
-        </p>
+        <p style="font-size:0.8rem; color:#888;">${req.description || ''}</p>
 
         <button class="btn-unlock" onclick="location.href='inscription.html'">
-            <i class="fas fa-lock"></i> VOIR LE NUMÉRO
+          <i class="fas fa-lock"></i> VOIR LE NUMÉRO
         </button>
-    `;
+      `;
 
-    listContainer.appendChild(card);
-});
+      listContainer.appendChild(card);
+    });
 
-    } catch (error) {
-        listContainer.innerHTML = '<p style="color:red; text-align:center;">Erreur serveur.</p>';
-    }
+  } catch (err) {
+    listContainer.innerHTML =
+      '<p style="color:red; text-align:center;">Erreur serveur.</p>';
+  }
 }
 
-        // --- Filtre de recherche ---
-        document.getElementById('filter-input').addEventListener('input', (e) => {
-            const search = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.request-card');
-            cards.forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(search) ? "block" : "none";
-            });
-        });
-        // ... (gardez vos fonctions existantes)
-
-// --- AJOUTER CECI À LA TOUTE FIN DU SCRIPT DANS INDEX.HTML ---
-document.addEventListener('DOMContentLoaded', () => {
-    loadRequests(); // Lance le chargement dès que la page est prête
-    
-    // Rafraîchir la liste toutes les 2 minutes pour voir les nouveaux taxis
-    setInterval(loadRequests, 120000); 
+/* ================= SEARCH ================= */
+document.getElementById('filter-input').addEventListener('input', e => {
+  const search = e.target.value.toLowerCase();
+  document.querySelectorAll('.request-card').forEach(card => {
+    card.style.display = card.innerText.toLowerCase().includes(search)
+      ? 'block'
+      : 'none';
+  });
 });
 
-    </script>
+/* ================= INIT ================= */
+loadRequests();
+</script>
+
 </body>
 </html>
