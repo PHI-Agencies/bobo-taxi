@@ -3,6 +3,7 @@ import Request from '../models/Request.js';
 
 const router = express.Router();
 
+// POST /api/requests
 router.post('/', async (req, res) => {
   try {
     const allowedDurations = [12, 24, 48];
