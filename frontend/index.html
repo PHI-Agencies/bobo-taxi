@@ -272,8 +272,7 @@ overlay.addEventListener('click', () => toggleMenu(false));
 /* ================= LOAD REQUESTS ================= */
 async function loadRequests() {
   const listContainer = document.getElementById('active-requests-list');
-  // On ne vide pas brutalement pour éviter le clignotement si possible
-  // mais on garde les skeletons pour le premier chargement
+  
   if(listContainer.children.length === 0 || listContainer.querySelector('.skeleton-card')) {
       listContainer.innerHTML = `
         <div class="skeleton-card"></div>
@@ -294,20 +293,19 @@ async function loadRequests() {
     listContainer.innerHTML = '';
 
     requests.forEach(req => {
+      // Calcul du label de temps (indicatif seulement)
       const now = new Date();
-      // expireAt correspond maintenant à l'heure exacte du trajet
       const tripTime = new Date(req.expireAt);
       const diffMs = tripTime - now;
       
-      // Si le trajet est déjà passé, on ne l'affiche plus (MongoDB le supprimera bientôt)
-      if (diffMs <= 0) return;
-
-      const hours = Math.floor(diffMs / (1000 * 60 * 60));
-      const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-      const timeLabel = hours > 0 
-        ? `Départ dans ${hours}h ${mins}m` 
-        : `Départ dans ${mins} min`;
+      let timeLabel = "";
+      if (diffMs > 0) {
+          const hours = Math.floor(diffMs / (1000 * 60 * 60));
+          const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+          timeLabel = hours > 0 ? `Départ dans ${hours}h ${mins}m` : `Départ dans ${mins} min`;
+      } else {
+          timeLabel = "Départ imminent";
+      }
 
       const card = document.createElement('div');
       card.className = 'request-card';
@@ -346,12 +344,10 @@ async function loadRequests() {
       listContainer.appendChild(card);
     });
 
-    // On applique le filtre de recherche actuel après le chargement des cartes
     applySearchFilter();
 
   } catch (err) {
-    listContainer.innerHTML =
-      '<p style="color:red; text-align:center; padding:20px;">Erreur de connexion au serveur.</p>';
+    listContainer.innerHTML = '<p style="color:red; text-align:center; padding:20px;">Erreur de connexion.</p>';
   }
 }
 
@@ -359,7 +355,6 @@ async function loadRequests() {
 function applySearchFilter() {
     const searchTerm = document.getElementById('filter-input').value.toLowerCase();
     const cards = document.querySelectorAll('.request-card');
-    
     cards.forEach(card => {
         const content = card.textContent.toLowerCase();
         card.style.display = content.includes(searchTerm) ? 'block' : 'none';
@@ -369,12 +364,8 @@ function applySearchFilter() {
 document.getElementById('filter-input').addEventListener('input', applySearchFilter);
 
 /* ================= INIT & REFRESH ================= */
-// Chargement initial
 loadRequests();
-
-// Rafraîchissement automatique toutes les 60 secondes
 setInterval(loadRequests, 60000);
 </script>
-
 </body>
 </html>
