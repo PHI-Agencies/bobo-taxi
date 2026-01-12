@@ -349,20 +349,35 @@ async function loadRequests() {
 }
 
 /* ================= SEARCH ================= */
-document.getElementById('filter-input').addEventListener('input', e => {
-  const search = e.target.value.toLowerCase();
-  document.querySelectorAll('.request-card').forEach(card => {
-    card.style.display = card.innerText.toLowerCase().includes(search)
-      ? 'block'
-      : 'none';
-  });
-});
+// On place la logique de filtrage dans une fonction réutilisable
+function applySearchFilter() {
+    const searchTerm = document.getElementById('filter-input').value.toLowerCase();
+    const cards = document.querySelectorAll('.request-card');
+    
+    cards.forEach(card => {
+        // On récupère le texte du quartier (le départ) spécifiquement pour plus de précision
+        const content = card.textContent.toLowerCase();
+        card.style.display = content.includes(searchTerm) ? 'block' : 'none';
+    });
+}
 
-/* ================= INIT ================= */
+// Écouteur sur l'input de recherche
+document.getElementById('filter-input').addEventListener('input', applySearchFilter);
+
+/* ================= INIT & REFRESH ================= */
+// On modifie légèrement loadRequests pour ré-appliquer le filtre après le chargement
+async function loadRequests() {
+    // ... votre code fetch existant ...
+    
+    // À la fin de votre fonction loadRequests actuelle, juste après la boucle forEach :
+    // applySearchFilter(); 
+}
+
+// Lancement initial
 loadRequests();
-// Auto-refresh toutes les 60s
-setInterval(loadRequests, 60000);
-</script>
 
-</body>
-</html>
+// Auto-refresh toutes les 60 secondes
+setInterval(async () => {
+    await loadRequests();
+    applySearchFilter(); // Ré-applique la recherche après la mise à jour
+}, 60000);
