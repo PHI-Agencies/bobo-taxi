@@ -3,53 +3,37 @@ import Request from '../models/Request.js';
 
 const router = express.Router();
 
-/* ================================
-   CRÉER UNE DEMANDE
-================================ */
 router.post('/', async (req, res) => {
   try {
-    const allowedDurations = [12, 24, 48];
+    const { type, departure, date, time, contact, description } = req.body;
 
-    const hours = allowedDurations.includes(Number(req.body.duration))
-      ? Number(req.body.duration)
-      : 24;
-
-    const expireAt = new Date(Date.now() + hours * 60 * 60 * 1000);
+    // 🔥 LOGIQUE CLÉ
+    const expireAt = new Date(`${date}T${time}:00`);
 
     const request = new Request({
-      type: req.body.type,
-      departure: req.body.departure,
-      date: req.body.date,
-      time: req.body.time,
-      duration: hours,
-      contact: req.body.contact,
-      description: req.body.description || '',
+      type,
+      departure,
+      date,
+      time,
+      contact,
+      description: description || '',
       expireAt
     });
 
     await request.save();
 
-    res.status(201).json({ message: 'Demande créée avec succès' });
+    res.status(201).json({ message: 'Demande créée' });
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: err.message });
   }
 });
 
-/* ================================
-   LISTER LES DEMANDES ACTIVES
-================================ */
+/**
+ * 📄 Afficher simplement ce qui existe encore
+ */
 router.get('/', async (req, res) => {
-  try {
-    const now = new Date();
-
-    const requests = await Request
-      .find({ expireAt: { $gt: now } })
-      .sort({ createdAt: -1 });
-
-    res.json(requests);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  const requests = await Request.find().sort({ createdAt: -1 });
+  res.json(requests);
 });
 
 export default router;

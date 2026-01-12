@@ -1,21 +1,26 @@
 import mongoose from 'mongoose';
 
 const requestSchema = new mongoose.Schema({
-  type: { type: String, required: true },
-  departure: { type: String, required: true },
-  date: { type: String, required: true },
-  time: { type: String, required: true },
-  duration: { type: Number, required: true },
-  contact: { type: String, required: true },
-  description: { type: String, default: '' },
+  type: String,
+  departure: String,
+  date: String,     // juste informatif
+  time: String,     // juste informatif
+  contact: String,
+  description: String,
 
-  createdAt: { type: Date, default: Date.now },
+  // 👉 Date exacte de suppression
+  expireAt: {
+    type: Date,
+    required: true
+  },
 
-  // ⏳ Date exacte d’expiration
-  expireAt: { type: Date, required: true }
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-// ✅ TTL NATIF MONGODB (SUPPRESSION AUTOMATIQUE)
+// ✅ TTL NATIF MONGODB
 requestSchema.index(
   { expireAt: 1 },
   { expireAfterSeconds: 0 }
