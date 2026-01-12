@@ -14,18 +14,24 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 🔵 POST : Créer une demande (Suppression auto à l'heure du trajet)
 router.post('/', async (req, res) => {
   try {
     const { date, time } = req.body;
 
-    // Création de l'objet Date d'expiration basé sur le départ réel
-    // Format attendu par le constructeur Date : "YYYY-MM-DDTHH:mm"
-    const tripDateTime = new Date(`${date}T${time}`);
+    // On force le format ISO : YYYY-MM-DDTHH:mm:00.000Z
+    // Le "Z" à la fin garantit que c'est l'heure UTC (identique à l'heure du Burkina)
+    const tripDateTime = new Date(`${date}T${time}:00.000Z`);
 
-    // Vérification si la date est valide
-    if (isNaN(tripDateTime.getTime())) {
-      return res.status(400).json({ message: "Format de date ou d'heure invalide." });
+    // --- SÉCURITÉ : LOG POUR VÉRIFIER ---
+    console.log("Date reçue du client :", date, time);
+    console.log("Objet Date créé (expireAt) :", tripDateTime.toISOString());
+    console.log("Heure actuelle du serveur :", new Date().toISOString());
+
+    // Si l'heure du trajet est déjà passée, on refuse la création
+    if (tripDateTime <= new Date()) {
+      return res.status(400).json({ 
+        message: "L'heure du trajet est déjà passée. Veuillez choisir une heure future." 
+      });
     }
 
     const newRequest = new Request({
@@ -35,14 +41,14 @@ router.post('/', async (req, res) => {
       time: time,
       contact: req.body.contact,
       description: req.body.description || '',
-      expireAt: tripDateTime // <--- Suppression automatique à cette échéance
+      expireAt: tripDateTime 
     });
 
     await newRequest.save();
     res.status(201).json({ message: 'Demande publiée avec succès' });
   } catch (err) {
-    console.error('Erreur lors de la création:', err);
-    res.status(400).json({ message: err.message });
+    console.error("Erreur création demande:", err);
+    res.status(400).json({ message: "Erreur de format de date." });
   }
 });
 
