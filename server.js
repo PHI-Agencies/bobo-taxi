@@ -3,11 +3,11 @@ import { fileURLToPath } from 'url';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import cron from 'node-cron';
+
 
 // Routes
 import requestRoutes from './backend/routes/requests.js';
-import { handleExpiringAccounts } from './backend/cron/cleanup.js';
+
 
 const app = express();
 
