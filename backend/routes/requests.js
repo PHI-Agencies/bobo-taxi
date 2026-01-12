@@ -1,5 +1,5 @@
 import express from 'express';
-import Request from './backend/models/Request.js.';
+import Request from '../models/Request.js';
 
 const router = express.Router();
 
