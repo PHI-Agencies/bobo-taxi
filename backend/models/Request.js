@@ -8,10 +8,17 @@ const requestSchema = new mongoose.Schema({
   duration: { type: Number, required: true },
   contact: { type: String, required: true },
   description: { type: String, default: '' },
+
   createdAt: { type: Date, default: Date.now },
-  expireAt: { type: Date, required: true } // TTL natif MongoDB
+
+  // ⏳ Date exacte d’expiration
+  expireAt: { type: Date, required: true }
 });
 
-requestSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+// ✅ TTL NATIF MONGODB (SUPPRESSION AUTOMATIQUE)
+requestSchema.index(
+  { expireAt: 1 },
+  { expireAfterSeconds: 0 }
+);
 
 export default mongoose.model('Request', requestSchema);

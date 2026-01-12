@@ -3,10 +3,13 @@ import Request from '../models/Request.js';
 
 const router = express.Router();
 
-// Créer une demande
+/* ================================
+   CRÉER UNE DEMANDE
+================================ */
 router.post('/', async (req, res) => {
   try {
     const allowedDurations = [12, 24, 48];
+
     const hours = allowedDurations.includes(Number(req.body.duration))
       ? Number(req.body.duration)
       : 24;
@@ -25,17 +28,24 @@ router.post('/', async (req, res) => {
     });
 
     await request.save();
-    res.status(201).json({ message: 'Demande créée' });
+
+    res.status(201).json({ message: 'Demande créée avec succès' });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// Récupérer toutes les demandes actives
+/* ================================
+   LISTER LES DEMANDES ACTIVES
+================================ */
 router.get('/', async (req, res) => {
   try {
     const now = new Date();
-    const requests = await Request.find({ expireAt: { $gt: now } }).sort({ createdAt: -1 });
+
+    const requests = await Request
+      .find({ expireAt: { $gt: now } })
+      .sort({ createdAt: -1 });
+
     res.json(requests);
   } catch (err) {
     res.status(500).json({ message: err.message });

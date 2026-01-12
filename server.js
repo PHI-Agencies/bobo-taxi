@@ -4,41 +4,64 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
-
-// Routes
 import requestRoutes from './backend/routes/requests.js';
-
 
 const app = express();
 
+/* ================================
+   ES MODULE PATHS
+================================ */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/* ================================
+   MIDDLEWARES
+================================ */
 app.use(express.json());
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 
-// Frontend statique
+/* ================================
+   FRONTEND STATIQUE
+================================ */
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-// MongoDB
+/* ================================
+   MONGODB
+================================ */
 const mongoURI = process.env.MONGODB_URI;
-if (!mongoURI) console.error('❌ MONGODB_URI non définie');
-else {
-  mongoose.connect(mongoURI)
+
+if (!mongoURI) {
+  console.error('❌ MONGODB_URI non définie');
+} else {
+  mongoose
+    .connect(mongoURI)
     .then(() => console.log('✅ MongoDB connecté'))
     .catch(err => console.error('❌ Erreur MongoDB:', err));
 }
 
-// API Routes
+/* ================================
+   API ROUTES
+================================ */
 app.use('/api/requests', requestRoutes);
 
-// Health check
-app.get('/health', (req, res) => res.json({ status: 'OK' }));
+/* ================================
+   HEALTH CHECK
+================================ */
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK' });
+});
 
-// Catch-all Frontend
+/* ================================
+   CATCH-ALL FRONTEND
+================================ */
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
+/* ================================
+   START SERVER
+================================ */
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`🚖 Serveur Bobo Taxi actif sur le port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚖 Bobo Taxi actif sur le port ${PORT}`);
+});
