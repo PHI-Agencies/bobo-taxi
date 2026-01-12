@@ -13,6 +13,7 @@
 :root {
     --primary: #f1c40f; 
     --green: #27ae60;
+    --urgent: #e74c3c;
     --dark: #121212;
     --card-bg: #1e1e1e;
     --text-light: #f4f4f4;
@@ -25,7 +26,7 @@ body {
     background-image: radial-gradient(circle at 50% 0%, #2c3e50 0%, #121212 100%);
     color: var(--text-light);
     margin: 0;
-    padding-bottom: 120px; /* Plus d'espace pour le bouton large */
+    padding-bottom: 120px;
     overflow-x: hidden;
 }
 
@@ -83,7 +84,6 @@ header {
     margin-left: 5px;
 }
 
-/* --- Animation LIVE --- */
 .live-dot {
     height: 8px; width: 8px;
     background-color: var(--green);
@@ -159,18 +159,18 @@ header {
     display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 
-/* --- BOUTON PUBLIER DROIT ET LARGE --- */
+/* --- Bouton Publier --- */
 .floating-cta {
     position: fixed;
     bottom: 20px;
     left: 15px;
-    right: 15px; /* Aligné sur les bords */
-    max-width: 570px; /* Aligné sur le contenu principal */
+    right: 15px;
+    max-width: 570px;
     margin: 0 auto;
     background: var(--green);
     color: white;
     padding: 18px;
-    border-radius: 12px; /* Droit avec coins légers */
+    border-radius: 12px;
     text-decoration: none;
     font-weight: 700;
     z-index: 900;
@@ -223,7 +223,7 @@ header {
     <div style="margin-bottom:25px;">
         <div style="display:inline-flex; align-items:center; padding:5px 0; margin-bottom:5px;">
             <span class="live-dot"></span>
-            <span style="color:var(--green); font-size:0.75rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;">Demandes en direct</span>
+            <span style="color:var(--green); font-size:0.75rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;">Demandes Actuelles</span>
         </div>
         <h1 style="font-size:1.6rem; margin:0; font-weight:700;">Trouvez un trajet</h1>
     </div>
@@ -273,18 +273,42 @@ async function loadRequests() {
         // 1. Filtrer les expirés
         requests = requests.filter(req => new Date(req.expireAt) > now);
 
-        // 2. Trier par heure de départ (le plus proche en premier)
+        // 2. Trier par heure de départ (proche en premier)
         requests.sort((a, b) => new Date(a.expireAt) - new Date(b.expireAt));
 
         listContainer.innerHTML = '';
 
         requests.forEach(req => {
+            // CALCUL DU MINUTAGE
+            const tripTime = new Date(req.expireAt);
+            const diffMs = tripTime - now;
+            const diffMinsTotal = Math.floor(diffMs / 60000);
+            
+            let timeLabel = "";
+            let isUrgent = diffMinsTotal < 20;
+
+            if (diffMinsTotal >= 60) {
+                const hours = Math.floor(diffMinsTotal / 60);
+                const mins = diffMinsTotal % 60;
+                timeLabel = `Départ dans ${hours}h ${mins}m`;
+            } else if (diffMinsTotal > 0) {
+                timeLabel = `Départ dans ${diffMinsTotal} min`;
+            } else {
+                timeLabel = "Départ imminent";
+            }
+
             const card = document.createElement('div');
             card.className = 'request-card';
+            
+            // Bordure rouge si urgent
+            if (isUrgent) card.style.borderLeft = "5px solid var(--urgent)";
+
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                     <span style="color:var(--primary); font-weight:bold;">${req.type.toUpperCase()}</span>
-                    <span style="color:var(--green); font-weight:600; font-size:0.75rem;">⏳ EN DIRECT</span>
+                    <span style="color:${isUrgent ? 'var(--urgent)' : 'var(--green)'}; font-weight:600; font-size:0.75rem;">
+                        <i class="fas fa-clock"></i> ${timeLabel}
+                    </span>
                 </div>
 
                 <div style="font-weight:600; font-size:1.1rem; margin-bottom:12px;">📍 ${req.departure}</div>
@@ -312,7 +336,7 @@ async function loadRequests() {
         applySearchFilter();
 
     } catch (err) {
-        listContainer.innerHTML = '<p style="color:red; text-align:center;">Erreur serveur.</p>';
+        listContainer.innerHTML = '<p style="color:red; text-align:center;">Erreur de connexion.</p>';
     }
 }
 
@@ -327,7 +351,7 @@ function applySearchFilter() {
 document.getElementById('filter-input').addEventListener('input', applySearchFilter);
 
 loadRequests();
-setInterval(loadRequests, 30000);
+setInterval(loadRequests, 30000); // Mise à jour toutes les 30 secondes pour le minutage
 </script>
 </body>
 </html>
