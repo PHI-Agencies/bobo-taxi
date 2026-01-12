@@ -32,7 +32,7 @@ app.use(cors({
 app.use(express.static(path.join(__dirname, 'frontend')));
 
 // ========================
-// MongoDB & Index TTL
+// MongoDB & Index TTL (Time-To-Live)
 // ========================
 const mongoURI = process.env.MONGODB_URI;
 
@@ -44,22 +44,36 @@ if (!mongoURI) {
     .then(() => {
       console.log('✅ MongoDB connecté');
 
-      // Configuration des index de suppression automatique (TTL)
+      // Configuration dynamique des index au démarrage
       mongoose.connection.on('open', async () => {
         try {
-          // TTL pour les chauffeurs (si expireAt existe)
-          await mongoose.connection.db
-            .collection('taximen')
-            .createIndex({ expireAt: 1 }, { expireAfterSeconds: 0 });
+          const requestsCollection = mongoose.connection.db.collection('requests');
+          const taximenCollection = mongoose.connection.db.collection('taximen');
           
-          // TTL pour les demandes (Suppression à l'heure du trajet)
-          await mongoose.connection.db
-            .collection('requests')
-            .createIndex({ expireAt: 1 }, { expireAfterSeconds: 0 });
+          // 1. RÉINITIALISATION DE L'INDEX POUR LES DEMANDES (REQUESTS)
+          // On supprime l'ancien index pour être sûr qu'il n'y a pas de conflit de délai
+          try {
+            await requestsCollection.dropIndex("expireAt_1");
+            console.log('🔄 Ancien index Requests supprimé');
+          } catch (e) {
+            // L'index n'existait pas, c'est normal au premier lancement
+          }
+          
+          // On crée l'index TTL avec expireAfterSeconds: 0
+          // Cela signifie : Supprime dès que NOW >= expireAt
+          await requestsCollection.createIndex({ expireAt: 1 }, { expireAfterSeconds: 0 });
+          console.log('✅ Nouvel index TTL Requests activé (0 seconde)');
 
-          console.log('✅ Index TTL actifs (Chauffeurs & Demandes)');
+          // 2. INDEX POUR LES CHAUFFEURS (TAXIMEN)
+          try {
+            await taximenCollection.createIndex({ expireAt: 1 }, { expireAfterSeconds: 0 });
+            console.log('✅ Index TTL Taximen actif');
+          } catch (err) {
+            console.error('⚠️ Erreur index Taximen:', err.message);
+          }
+
         } catch (err) {
-          console.error('⚠️ Erreur configuration index TTL:', err.message);
+          console.error('⚠️ Erreur globale configuration index:', err.message);
         }
       });
     })
@@ -79,7 +93,7 @@ app.use('/api/withdrawals', withdrawalRoutes);
 // Health check
 // ========================
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Serveur opérationnel' });
+  res.status(200).json({ status: 'OK', serverTime: new Date().toISOString() });
 });
 
 // ========================
@@ -95,5 +109,5 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`🚖 Serveur Bobo Taxi actif sur le port ${PORT}`);
-  console.log('🕒 Gestion automatique des expirations : Active via MongoDB TTL');
+  console.log('🕒 Mode : Suppression automatique à l\'heure du trajet (GMT/UTC)');
 });
