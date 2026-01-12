@@ -29,12 +29,6 @@ else {
     .catch(err => console.error('❌ Erreur MongoDB:', err));
 }
 
-// Cron : supprimer les demandes expirées toutes les heures
-cron.schedule('0 * * * *', () => {
-  console.log('🔍 [CRON] Vérification des demandes expirées...');
-  handleExpiringAccounts();
-});
-
 // API Routes
 app.use('/api/requests', requestRoutes);
 
