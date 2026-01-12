@@ -39,6 +39,6 @@ const requestSchema = new mongoose.Schema({
 
 // Index TTL (Time-To-Live) : 
 // Supprime la demande automatiquement quand l'heure actuelle >= expireAt
-//requestSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+requestSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model('Request', requestSchema);
