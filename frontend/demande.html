@@ -106,7 +106,6 @@
       border-color: var(--taxi-yellow);
     }
 
-    /* --- Dates & Heures Groupées --- */
     .flex-row {
       display: flex;
       gap: 10px;
@@ -164,37 +163,29 @@
   <main>
     <div class="form-container">
       <h2>Publier une demande</h2>
-      <p class="subtitle">Précisez la date et l'heure pour aider nos chauffeurs à s'organiser.</p>
+      <p class="subtitle">Indiquez votre trajet. L'annonce sera retirée automatiquement une fois l'heure de départ passée.</p>
       
       <form id="create-request-form">
-
-      <label for="transport-type"><i class="fas fa-car"></i> Moyen de transport</label>
-      <select id="transport-type" required>
-        <option value="" selected disabled>— Choisir un moyen —</option>
-        <option value="Taxi-voiture">Taxi-voiture</option>
-        <option value="Moto-taxi">Moto-taxi</option>
-      </select>
+        <label for="transport-type"><i class="fas fa-car"></i> Moyen de transport</label>
+        <select id="transport-type" required>
+          <option value="" selected disabled>— Choisir un moyen —</option>
+          <option value="Taxi-voiture">Taxi-voiture</option>
+          <option value="Moto-taxi">Moto-taxi</option>
+        </select>
 
         <label for="itinerary"><i class="fas fa-map-marker-alt"></i> Itinéraire (D'où à où ?)</label>
         <textarea id="itinerary" rows="2" required placeholder="Ex: De Tounouma vers Grand Marché"></textarea>
 
         <div class="flex-row">
           <div>
-            <label for="departure-date"><i class="fas fa-calendar-alt"></i> Date</label>
+            <label for="departure-date"><i class="fas fa-calendar-alt"></i> Date départ</label>
             <input type="date" id="departure-date" required>
           </div>
           <div>
-            <label for="departure-time"><i class="fas fa-clock"></i> Heure</label>
+            <label for="departure-time"><i class="fas fa-clock"></i> Heure départ</label>
             <input type="time" id="departure-time" required>
           </div>
         </div>
-
-        <label for="validity-duration"><i class="fas fa-hourglass-half"></i> Maintenir l'annonce pendant</label>
-        <select id="validity-duration" required>
-          <option value="12">12 heures</option>
-          <option value="24" selected>24 heures (Conseillé)</option>
-          <option value="48">48 heures</option>
-        </select>
 
         <label for="contact-info"><i class="fas fa-phone-alt"></i> Votre numéro (WhatsApp ou Appel)</label>
         <input type="tel" id="contact-info" required placeholder="Ex: 70 00 00 00">
@@ -213,51 +204,52 @@
   </footer>
 
   <script>
-const form = document.getElementById('create-request-form');
-const msg = document.getElementById('request-message');
+    const form = document.getElementById('create-request-form');
+    const msg = document.getElementById('request-message');
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  msg.innerText = "Publication en cours...";
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      msg.style.color = "white";
+      msg.innerText = "Publication en cours...";
 
-  const durationValue = Number(
-    document.getElementById('validity-duration').value
-  );
+      const data = {
+        type: document.getElementById('transport-type').value,
+        departure: document.getElementById('itinerary').value,
+        date: document.getElementById('departure-date').value,
+        time: document.getElementById('departure-time').value,
+        contact: document.getElementById('contact-info').value,
+        description: document.getElementById('comments').value || ""
+      };
 
-  const data = {
-    type: document.getElementById('transport-type').value,
-    departure: document.getElementById('itinerary').value,
-    date: document.getElementById('departure-date').value,
-    time: document.getElementById('departure-time').value,
-    duration: durationValue, // 🔐 bien un NUMBER
-    contact: document.getElementById('contact-info').value,
-    description: document.getElementById('comments').value || ""
-  };
+      try {
+        const response = await fetch('/api/requests', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
 
-  try {
-    const response = await fetch('/api/requests', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
+        if (response.ok) {
+          msg.style.color = "var(--taxi-green)";
+          msg.innerText = "✅ Demande publiée avec succès !";
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+        } else {
+          const error = await response.json();
+          msg.style.color = "#e74c3c";
+          msg.innerText = "❌ Erreur : " + (error.message || "Échec");
+        }
+      } catch (error) {
+        msg.style.color = "#e74c3c";
+        msg.innerText = "❌ Serveur injoignable.";
+      }
     });
 
-    if (response.ok) {
-      msg.innerText = "✅ Demande publiée avec succès !";
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1500);
-    } else {
-      const error = await response.json();
-      msg.innerText = "❌ Erreur : " + (error.message || "Échec");
-    }
-
-  } catch (error) {
-    console.error(error);
-    msg.innerText = "❌ Serveur injoignable.";
-  }
-});
-</script>
+    // Fix pour ne pas choisir une date passée (Optionnel mais recommandé)
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('departure-date').setAttribute('min', today);
+  </script>
 </body>
 </html>
