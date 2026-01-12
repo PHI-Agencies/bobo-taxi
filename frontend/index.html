@@ -253,119 +253,126 @@ header {
 </a>
 
 <script>
-/* ================= MENU ================= */
+/* ================= LOGIQUE MENU ================= */
 const sideMenu = document.getElementById('side-menu');
 const overlay = document.getElementById('menu-overlay');
 const openBtn = document.getElementById('open-menu');
 const closeBtn = document.getElementById('close-menu');
 
 function toggleMenu(isOpen) {
-  sideMenu.classList.toggle('active', isOpen);
-  overlay.style.display = isOpen ? 'block' : 'none';
-  document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+    sideMenu.classList.toggle('active', isOpen);
+    overlay.style.display = isOpen ? 'block' : 'none';
+    document.body.style.overflow = isOpen ? 'hidden' : 'auto';
 }
 
 openBtn.addEventListener('click', () => toggleMenu(true));
 closeBtn.addEventListener('click', () => toggleMenu(false));
 overlay.addEventListener('click', () => toggleMenu(false));
 
-/* ================= LOAD REQUESTS ================= */
+/* ================= CHARGEMENT & FILTRAGE ================= */
 async function loadRequests() {
-  const listContainer = document.getElementById('active-requests-list');
-  
-  if(listContainer.children.length === 0 || listContainer.querySelector('.skeleton-card')) {
-      listContainer.innerHTML = `
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-      `;
-  }
+    const listContainer = document.getElementById('active-requests-list');
+    
+    try {
+        const response = await fetch('/api/requests');
+        let requests = await response.json();
 
-  try {
-    const response = await fetch('/api/requests');
-    const requests = await response.json();
+        if (!requests || requests.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; padding:50px 20px; color:var(--text-muted);"><i class="fas fa-ghost fa-3x" style="margin-bottom:15px; opacity:0.2;"></i><p>Aucun trajet pour le moment.</p></div>';
+            return;
+        }
 
-    if (!requests || requests.length === 0) {
-      listContainer.innerHTML =
-        '<p style="text-align:center; padding:40px; opacity:0.5;">Aucun trajet disponible.</p>';
-      return;
+        const now = new Date();
+
+        // 1. FILTRAGE : Uniquement ce qui n'est pas expiré
+        requests = requests.filter(req => new Date(req.expireAt) > now);
+
+        // 2. TRI : Les départs les plus proches en premier (Urgences)
+        requests.sort((a, b) => new Date(a.expireAt) - new Date(b.expireAt));
+
+        listContainer.innerHTML = '';
+
+        requests.forEach(req => {
+            const tripTime = new Date(req.expireAt);
+            const diffMs = tripTime - now;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            let timeLabel = "";
+            let isUrgent = diffMins < 20;
+
+            if (diffMins > 60) {
+                const h = Math.floor(diffMins / 60);
+                const m = diffMins % 60;
+                timeLabel = `dans ${h}h ${m}m`;
+            } else if (diffMins <= 0) {
+                timeLabel = "Départ imminent";
+                isUrgent = true;
+            } else {
+                timeLabel = `dans ${diffMins} min`;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'request-card';
+            if (isUrgent) card.style.borderLeft = "5px solid var(--urgent)";
+
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <span style="font-size:0.75rem; color:var(--primary); font-weight:800; background:rgba(241,196,15,0.1); padding:4px 10px; border-radius:8px;">
+                        ${req.type.toUpperCase()}
+                    </span>
+                    <span style="font-size:0.85rem; color:${isUrgent ? 'var(--urgent)' : 'var(--green)'}; font-weight:700;">
+                        <i class="fas fa-clock"></i> ${timeLabel}
+                    </span>
+                </div>
+
+                <div style="font-weight:700; font-size:1.2rem; margin-bottom:15px; color:white;">
+                    📍 ${req.departure}
+                </div>
+
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <div style="flex:1; background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase;">Le</div>
+                        <div style="font-size:0.9rem; font-weight:600;">${req.date}</div>
+                    </div>
+                    <div style="flex:1; background:rgba(255,255,255,0.03); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size:0.6rem; color:var(--text-muted); text-transform:uppercase;">À</div>
+                        <div style="font-size:0.9rem; font-weight:600;">${req.time}</div>
+                    </div>
+                </div>
+
+                <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5; margin-bottom:10px;">
+                    ${req.description || 'Pas de bagages lourds.'}
+                </p>
+
+                <button class="btn-unlock" onclick="location.href='inscription.html'">
+                    <i class="fas fa-phone-alt"></i> APPELER LE CLIENT
+                </button>
+            `;
+            listContainer.appendChild(card);
+        });
+
+        applySearchFilter();
+
+    } catch (err) {
+        listContainer.innerHTML = '<p style="color:var(--urgent); text-align:center; padding:30px;">Erreur réseau.</p>';
     }
-
-    listContainer.innerHTML = '';
-
-    requests.forEach(req => {
-      // Calcul du label de temps (indicatif seulement)
-      const now = new Date();
-      const tripTime = new Date(req.expireAt);
-      const diffMs = tripTime - now;
-      
-      let timeLabel = "";
-      if (diffMs > 0) {
-          const hours = Math.floor(diffMs / (1000 * 60 * 60));
-          const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-          timeLabel = hours > 0 ? `Départ dans ${hours}h ${mins}m` : `Départ dans ${mins} min`;
-      } else {
-          timeLabel = "Départ imminent";
-      }
-
-      const card = document.createElement('div');
-      card.className = 'request-card';
-      card.innerHTML = `
-        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-          <span style="font-size:0.7rem; color:var(--primary); font-weight:bold;">
-            ${req.type.toUpperCase()}
-          </span>
-          <span style="font-size:0.7rem; color:var(--green); font-weight:600;">
-            ⏳ ${timeLabel}
-          </span>
-        </div>
-
-        <div style="font-weight:600; font-size:1.1rem; margin-bottom:12px;">
-          📍 ${req.departure}
-        </div>
-
-        <div style="display:flex; gap:8px; margin-bottom:10px;">
-          <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border:1px solid #333;">
-            <div style="font-size:0.55rem; color:var(--text-muted);">DATE DU TRAJET</div>
-            <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${req.date}</div>
-          </div>
-          <div style="flex:1; background:rgba(255,255,255,0.05); padding:6px; border-radius:8px; text-align:center; border:1px solid #333;">
-            <div style="font-size:0.55rem; color:var(--text-muted);">HEURE DÉPART</div>
-            <div style="font-size:0.85rem; font-weight:600; color:var(--primary);">${req.time}</div>
-          </div>
-        </div>
-
-        <p style="font-size:0.8rem; color:#888;">${req.description || 'Pas de précision supplémentaire'}</p>
-
-        <button class="btn-unlock" onclick="location.href='inscription.html'">
-          <i class="fas fa-lock"></i> VOIR LE NUMÉRO
-        </button>
-      `;
-
-      listContainer.appendChild(card);
-    });
-
-    applySearchFilter();
-
-  } catch (err) {
-    listContainer.innerHTML = '<p style="color:red; text-align:center; padding:20px;">Erreur de connexion.</p>';
-  }
 }
 
-/* ================= SEARCH ================= */
+/* ================= RECHERCHE ================= */
 function applySearchFilter() {
-    const searchTerm = document.getElementById('filter-input').value.toLowerCase();
+    const term = document.getElementById('filter-input').value.toLowerCase();
     const cards = document.querySelectorAll('.request-card');
     cards.forEach(card => {
-        const content = card.textContent.toLowerCase();
-        card.style.display = content.includes(searchTerm) ? 'block' : 'none';
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(term) ? 'block' : 'none';
     });
 }
 
 document.getElementById('filter-input').addEventListener('input', applySearchFilter);
 
-/* ================= INIT & REFRESH ================= */
+// Init & Refresh automatique
 loadRequests();
-setInterval(loadRequests, 60000);
+setInterval(loadRequests, 30000); // Rafraîchi toutes les 30s
 </script>
 </body>
 </html>

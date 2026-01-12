@@ -26,7 +26,6 @@
       min-height: 100vh;
     }
 
-    /* --- Navigation --- */
     nav {
       display: flex;
       align-items: center;
@@ -54,7 +53,6 @@
       border: 2px solid var(--taxi-yellow);
     }
 
-    /* --- Formulaire --- */
     .form-container {
       max-width: 450px;
       margin: 10px auto 40px;
@@ -102,6 +100,31 @@
       transition: border-color 0.3s;
     }
 
+    /* --- Style pour le champ numéro avec +226 --- */
+    .phone-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--input-bg);
+      border: 1px solid #444;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .phone-prefix {
+      background: #333;
+      padding: 12px 15px;
+      color: var(--taxi-yellow);
+      font-weight: 700;
+      border-right: 1px solid #444;
+    }
+
+    .phone-input-wrapper input {
+      margin-bottom: 0;
+      border: none;
+      flex: 1;
+    }
+
     input:focus, textarea:focus, select:focus {
       border-color: var(--taxi-yellow);
     }
@@ -112,9 +135,7 @@
       margin-bottom: 5px;
     }
 
-    .flex-row div {
-      flex: 1;
-    }
+    .flex-row div { flex: 1; }
 
     button[type="submit"] {
       width: 100%;
@@ -126,7 +147,6 @@
       font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -152,9 +172,7 @@
 <body>
   <header>
     <nav>
-      <a href="index.html" class="btn-back">
-        <i class="fas fa-arrow-left"></i>
-      </a>
+      <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i></a>
       <img src="taxi.jpg" alt="Logo Bobo Taxi" class="app-logo-img">
       <div style="width: 40px;"></div>
     </nav>
@@ -163,7 +181,7 @@
   <main>
     <div class="form-container">
       <h2>Publier une demande</h2>
-      <p class="subtitle">Indiquez votre trajet. L'annonce sera retirée automatiquement une fois l'heure de départ passée.</p>
+      <p class="subtitle">Indiquez votre trajet. Votre annonce disparaîtra automatiquement au départ.</p>
       
       <form id="create-request-form">
         <label for="transport-type"><i class="fas fa-car"></i> Moyen de transport</label>
@@ -174,24 +192,27 @@
         </select>
 
         <label for="itinerary"><i class="fas fa-map-marker-alt"></i> Itinéraire (D'où à où ?)</label>
-        <textarea id="itinerary" rows="2" required placeholder="Ex: De Tounouma vers Grand Marché"></textarea>
+        <textarea id="itinerary" rows="2" required placeholder="Ex: De Sarfalao vers Bolomakoté"></textarea>
 
         <div class="flex-row">
           <div>
-            <label for="departure-date"><i class="fas fa-calendar-alt"></i> Date départ</label>
+            <label for="departure-date"><i class="fas fa-calendar-alt"></i> Date</label>
             <input type="date" id="departure-date" required>
           </div>
           <div>
-            <label for="departure-time"><i class="fas fa-clock"></i> Heure départ</label>
+            <label for="departure-time"><i class="fas fa-clock"></i> Heure</label>
             <input type="time" id="departure-time" required>
           </div>
         </div>
 
-        <label for="contact-info"><i class="fas fa-phone-alt"></i> Votre numéro (WhatsApp ou Appel)</label>
-        <input type="tel" id="contact-info" required placeholder="Ex: 70 00 00 00">
+        <label for="contact-info"><i class="fas fa-phone-alt"></i> Numéro de téléphone</label>
+        <div class="phone-input-wrapper">
+          <span class="phone-prefix">+226</span>
+          <input type="number" id="contact-info" required placeholder="00000000" oninput="if(this.value.length > 8) this.value = this.value.slice(0,8);">
+        </div>
 
         <label for="comments"><i class="fas fa-info-circle"></i> Précisions (Facultatif)</label>
-        <textarea id="comments" rows="2" placeholder="Ex: Nous sommes deux personnes..."></textarea>
+        <textarea id="comments" rows="2" placeholder="Ex: Je suis avec un petit sac..."></textarea>
 
         <button type="submit">Lancer la demande <i class="fas fa-paper-plane"></i></button>
         <p id="request-message"></p>
@@ -209,6 +230,16 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      const phoneInput = document.getElementById('contact-info');
+      
+      // Validation stricte à 8 chiffres
+      if(phoneInput.value.length !== 8) {
+          msg.style.color = "#e74c3c";
+          msg.innerText = "❌ Le numéro doit faire exactement 8 chiffres.";
+          return;
+      }
+
       msg.style.color = "white";
       msg.innerText = "Publication en cours...";
 
@@ -217,37 +248,33 @@
         departure: document.getElementById('itinerary').value,
         date: document.getElementById('departure-date').value,
         time: document.getElementById('departure-time').value,
-        contact: document.getElementById('contact-info').value,
+        contact: "+226 " + phoneInput.value, // Envoi avec le préfixe au serveur
         description: document.getElementById('comments').value || ""
       };
 
       try {
         const response = await fetch('/api/requests', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
 
         if (response.ok) {
           msg.style.color = "var(--taxi-green)";
-          msg.innerText = "✅ Demande publiée avec succès !";
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 1500);
+          msg.innerText = "✅ Demande publiée !";
+          setTimeout(() => { window.location.href = 'index.html'; }, 1500);
         } else {
           const error = await response.json();
           msg.style.color = "#e74c3c";
-          msg.innerText = "❌ Erreur : " + (error.message || "Échec");
+          msg.innerText = "❌ " + (error.message || "Échec");
         }
       } catch (error) {
         msg.style.color = "#e74c3c";
-        msg.innerText = "❌ Serveur injoignable.";
+        msg.innerText = "❌ Erreur serveur.";
       }
     });
 
-    // Fix pour ne pas choisir une date passée (Optionnel mais recommandé)
+    // Date minimum = aujourd'hui
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('departure-date').setAttribute('min', today);
   </script>
